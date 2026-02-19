@@ -18,7 +18,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductCreateReq createReq) throws Exception {
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductCreateReq createReq) {
         ProductResponse resp = this.productService.createProduct(createReq);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -29,7 +29,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductResponse getProduct(@PathVariable String id) throws Exception{
+    public ProductResponse getProduct(@PathVariable String id){
         return this.productService.getProduct(id);
     }
 }

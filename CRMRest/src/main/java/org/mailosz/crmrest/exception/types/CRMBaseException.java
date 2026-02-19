@@ -19,4 +19,15 @@ public class CRMBaseException extends RuntimeException {
         this(message, errorCode, httpStatus, Collections.emptyMap());
     }
 
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public Map<String, Object> getMetadata() {
+        return metadata;
+    }
 }
