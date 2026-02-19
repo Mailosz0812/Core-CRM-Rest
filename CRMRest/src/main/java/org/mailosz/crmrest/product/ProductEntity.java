@@ -13,21 +13,21 @@ public class ProductEntity {
     @Column(updatable = false)
     private UUID id;
 
-    @Column(name = "prod_name")
-    private String name;
-
     @Column(name = "unit_price",precision = 15, scale = 2)
     private BigDecimal unitPrice;
 
-    @Column(name = "category")
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    @OneToOne
+    @JoinColumn(name = "cache_id", referencedColumnName = "id")
+    private ProductState productState;
 
-    public ProductEntity(UUID id, String name, BigDecimal unitPrice, Category category) {
+    @Column(nullable = false)
+    private Boolean visibility;
+
+    public ProductEntity(UUID id,BigDecimal unitPrice, ProductState productState, Boolean visibility) {
         this.id = id;
-        this.name = name;
         this.unitPrice = unitPrice;
-        this.category = category;
+        this.productState = productState;
+        this.visibility = visibility;
     }
 
     public ProductEntity() {
@@ -36,19 +36,6 @@ public class ProductEntity {
     public UUID getId() {
         return id;
     }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public BigDecimal getUnitPrice() {
         return unitPrice;
     }
@@ -57,11 +44,19 @@ public class ProductEntity {
         this.unitPrice = unitPrice;
     }
 
-    public Category getCategory() {
-        return category;
+    public ProductState getProductState() {
+        return productState;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setProductState(ProductState productState) {
+        this.productState = productState;
+    }
+
+    public Boolean getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Boolean visibility) {
+        this.visibility = visibility;
     }
 }

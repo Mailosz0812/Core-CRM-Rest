@@ -16,28 +16,52 @@ public class ProductState {
     @Column(updatable = false)
     private UUID id;
 
+    @Column(name = "product_name",nullable = false,updatable = false)
+    private String name;
+
     @Column(name = "external_id", nullable = false, updatable = false)
     private String externalId;
 
     @Column(name = "product_state", nullable = false,precision = 15,scale = 3)
     private BigDecimal productState;
 
+    @Column(name = "category")
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
     @UpdateTimestamp
     private OffsetDateTime lastUpdate;
 
-    @OneToOne
-    @JoinColumn(name = "product_id",referencedColumnName = "id",nullable = false)
-    private ProductEntity product;
-
-    public ProductState(UUID id, String externalId, BigDecimal productState, OffsetDateTime lastUpdate, ProductEntity product) {
+    public ProductState(UUID id, String name, String externalId, BigDecimal productState, Category category, OffsetDateTime lastUpdate) {
         this.id = id;
+        this.name = name;
         this.externalId = externalId;
         this.productState = productState;
+        this.category = category;
         this.lastUpdate = lastUpdate;
-        this.product = product;
     }
 
     public ProductState() {
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getExternalId() {
@@ -62,18 +86,6 @@ public class ProductState {
 
     public void setLastUpdate(OffsetDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    public ProductEntity getProduct() {
-        return product;
-    }
-
-    public void setProduct(ProductEntity product) {
-        this.product = product;
-    }
-
-    public UUID getId() {
-        return id;
     }
 }
 
