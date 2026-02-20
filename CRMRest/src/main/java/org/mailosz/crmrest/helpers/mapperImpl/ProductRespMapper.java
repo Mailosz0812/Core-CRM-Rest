@@ -6,12 +6,18 @@ import org.mailosz.crmrest.product.ProductResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ProductRespMapper implements Mapper<ProductEntity, ProductResponse> {
     private ModelMapper mapper;
 
     public ProductRespMapper(ModelMapper mapper) {
         this.mapper = mapper;
+        this.mapper.createTypeMap(ProductEntity.class,ProductResponse.class)
+                .addMapping(entity -> entity.getProductState().getCategory(),
+                        ProductResponse::setCategory);
+
     }
 
     @Override

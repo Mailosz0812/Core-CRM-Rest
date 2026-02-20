@@ -10,7 +10,7 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
     List<ProductEntity> findAll();
-    Optional<ProductEntity> findProductEntityByName(String name);
+    Optional<ProductEntity> findProductEntityByProductName(String name);
     Optional<ProductEntity> findProductEntityById(UUID id);
-    Optional<ProductEntity> findProductEntityByProductStateId(UUID id);
+    Optional<ProductEntity> findProductEntityByClientIdAndProductStateId(UUID id,UUID stateId);
 }

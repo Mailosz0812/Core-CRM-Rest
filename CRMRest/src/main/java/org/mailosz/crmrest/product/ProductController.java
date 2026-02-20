@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/product")
@@ -31,5 +32,9 @@ public class ProductController {
     @GetMapping("/{id}")
     public ProductResponse getProduct(@PathVariable String id){
         return this.productService.getProduct(id);
+    }
+    @GetMapping
+    public List<ProductResponse> getAllProducts(){
+        return this.productService.getAllProducts();
     }
 }
