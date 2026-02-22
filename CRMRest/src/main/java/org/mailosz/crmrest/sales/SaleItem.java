@@ -1,7 +1,7 @@
 package org.mailosz.crmrest.sales;
 
 import jakarta.persistence.*;
-import org.mailosz.crmrest.product.ProductEntity;
+import org.mailosz.crmrest.product.ProductState;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class SaleItem {
 
     @ManyToOne
     @JoinColumn(name = "product_id",referencedColumnName = "id",nullable = false)
-    private ProductEntity product;
+    private ProductState product;
 
     @Column(name = "amount",nullable = false,precision = 15, scale = 3)
     private BigDecimal amount;
@@ -31,7 +31,7 @@ public class SaleItem {
     @Column(name = "sum_price", precision = 15, scale = 2,nullable = false)
     private BigDecimal sumPrice;
 
-    public SaleItem(UUID id, SaleEntity sale, ProductEntity product, BigDecimal amount, BigDecimal unitPriceAtSale, BigDecimal sumPrice) {
+    public SaleItem(UUID id, SaleEntity sale, ProductState product, BigDecimal amount, BigDecimal unitPriceAtSale, BigDecimal sumPrice) {
         this.id = id;
         this.sale = sale;
         this.product = product;
@@ -54,11 +54,11 @@ public class SaleItem {
         this.sale = sale;
     }
 
-    public ProductEntity getProduct() {
+    public ProductState getProduct() {
         return product;
     }
 
-    public void setProduct(ProductEntity product) {
+    public void setProduct(ProductState product) {
         this.product = product;
     }
 
