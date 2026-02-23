@@ -6,7 +6,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.mailosz.crmrest.crmclient.CrmClientEntity;
 import org.mailosz.crmrest.crmuser.CrmUserEntity;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,6 +32,9 @@ public class SaleEntity {
     @JoinColumn(name = "stage_id", referencedColumnName = "id",nullable = false)
     private SaleStage stage;
 
+    @OneToMany(mappedBy = "sale")
+    private List<SaleItem> saleItems;
+
     @CreationTimestamp
     private OffsetDateTime createdAt;
 
@@ -37,14 +42,25 @@ public class SaleEntity {
     private OffsetDateTime updatedAt;
     private OffsetDateTime checkedAt;
 
-    public SaleEntity(UUID id, CrmClientEntity client, CrmUserEntity user, SaleStage stage, OffsetDateTime createdAt, OffsetDateTime updatedAt, OffsetDateTime checkedAt) {
+    @Column(name = "sum_price")
+    private BigDecimal sumPrice;
+
+    @Column(name = "sale_data")
+    private String saleData;
+
+    public SaleEntity(UUID id, CrmClientEntity client, CrmUserEntity user, SaleStage stage,
+                      List<SaleItem> saleItems, OffsetDateTime createdAt,
+                      OffsetDateTime updatedAt, OffsetDateTime checkedAt, BigDecimal sumPrice, String saleData) {
         this.id = id;
         this.client = client;
         this.user = user;
         this.stage = stage;
+        this.saleItems = saleItems;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.checkedAt = checkedAt;
+        this.sumPrice = sumPrice;
+        this.saleData = saleData;
     }
 
     public SaleEntity() {
@@ -52,6 +68,26 @@ public class SaleEntity {
 
     public UUID getId() {
         return id;
+    }
+
+    public String getSaleData() {
+        return saleData;
+    }
+
+    public BigDecimal getSumPrice() {
+        return sumPrice;
+    }
+
+    public void setSumPrice(BigDecimal sumPrice) {
+        this.sumPrice = sumPrice;
+    }
+
+    public void setSaleData(String saleData) {
+        this.saleData = saleData;
+    }
+
+    public List<SaleItem> getSaleItems() {
+        return saleItems;
     }
 
     public CrmClientEntity getClient() {

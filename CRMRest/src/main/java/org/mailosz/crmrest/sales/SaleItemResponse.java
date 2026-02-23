@@ -1,41 +1,38 @@
 package org.mailosz.crmrest.sales;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-
 import java.math.BigDecimal;
 
-public class SaleItemReq {
-
-    @NotBlank
-    private String prodCacheId;
-
-    @NotBlank
+public class SaleItemResponse {
+    private String saleItemId;
     private String name;
-
-    @DecimalMin(value = "0.01",message = "Price should be greater than zero")
     private BigDecimal unitPrice;
-
-    @Positive(message = "Amount should be greater than zero")
     private BigDecimal amount;
+    private BigDecimal sumPrice;
 
-    public SaleItemReq() {
-    }
-
-    public SaleItemReq(String prodCacheId, String name, BigDecimal unitPrice, BigDecimal amount) {
-        this.prodCacheId = prodCacheId;
+    public SaleItemResponse(String saleItemId, String name, BigDecimal unitPrice, BigDecimal amount, BigDecimal sumPrice) {
+        this.saleItemId = saleItemId;
         this.name = name;
         this.unitPrice = unitPrice;
         this.amount = amount;
+        this.sumPrice = sumPrice;
     }
 
-    public String getProdCacheId() {
-        return prodCacheId;
+    public SaleItemResponse(){}
+
+    public String getSaleItemId() {
+        return saleItemId;
     }
 
-    public void setProdCacheId(String prodCacheId) {
-        this.prodCacheId = prodCacheId;
+    public BigDecimal getSumPrice() {
+        return sumPrice;
+    }
+
+    public void setSumPrice(BigDecimal sumPrice) {
+        this.sumPrice = sumPrice;
+    }
+
+    public void setSaleItemId(String saleItemId) {
+        this.saleItemId = saleItemId;
     }
 
     public String getName() {
