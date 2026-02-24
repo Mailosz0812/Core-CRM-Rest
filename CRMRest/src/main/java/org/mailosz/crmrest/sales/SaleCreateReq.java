@@ -3,6 +3,7 @@ package org.mailosz.crmrest.sales;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import org.hibernate.validator.constraints.UUID;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public class SaleCreateReq {
 
     @NotBlank
+    @UUID
     private String clientId;
 
     @NotBlank

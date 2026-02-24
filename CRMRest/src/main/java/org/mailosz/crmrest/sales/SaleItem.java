@@ -95,6 +95,7 @@ public class SaleItem {
     }
 
     public BigDecimal getSumPrice() {
+        calculateSum();
         return sumPrice;
     }
 
