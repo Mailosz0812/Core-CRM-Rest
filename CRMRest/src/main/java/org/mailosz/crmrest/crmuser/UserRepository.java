@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<CrmUserEntity, UUID> {
     Optional<CrmUserEntity> findCrmUserEntityById(UUID id);
+    Optional<CrmUserEntity> findCrmUserEntityByMail(String mail);
 }
