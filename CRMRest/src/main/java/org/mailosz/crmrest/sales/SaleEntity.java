@@ -39,7 +39,6 @@ public class SaleEntity {
     private OffsetDateTime createdAt;
 
     @UpdateTimestamp
-    @CreationTimestamp
     private OffsetDateTime updatedAt;
     private OffsetDateTime checkedAt;
 

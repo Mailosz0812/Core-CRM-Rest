@@ -3,9 +3,12 @@ package org.mailosz.crmrest.helpers.mapperImpl;
 import org.mailosz.crmrest.crmuser.CrmUserEntity;
 import org.mailosz.crmrest.crmuser.response.UserCreateResp;
 import org.mailosz.crmrest.helpers.Mapper;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 public class UserCreateRespMapper implements Mapper<CrmUserEntity, UserCreateResp> {
@@ -13,8 +16,6 @@ public class UserCreateRespMapper implements Mapper<CrmUserEntity, UserCreateRes
 
     public UserCreateRespMapper(ModelMapper mapper) {
         this.mapper = mapper;
-        TypeMap<CrmUserEntity,UserCreateResp> crmEntityMap= this.mapper.createTypeMap(CrmUserEntity.class, UserCreateResp.class);
-        crmEntityMap.addMapping((entity) -> entity.getId().toString(),UserCreateResp::setUserId);
     }
 
     @Override

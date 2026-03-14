@@ -24,21 +24,16 @@ public class SaleService {
     private final UserRepository userRepository;
     private final SaleStageRepository stageRepository;
     private final ProductCacheRepository cacheRepository;
-    private final Mapper<SaleEntity,SaleResponse> saleRespMapper;
-    private final Mapper<SaleEntity,ShortSaleResp> shortSaleRespMapper;
 
     public SaleService(SaleRepository saleRepository, SaleItemRepository saleItemRepository, ClientRepository clientRepository,
                        UserRepository userRepository, SaleStageRepository stageRepository,
-                       ProductCacheRepository cacheRepository, Mapper<SaleEntity, SaleResponse> saleRespMapper,
-                       Mapper<SaleEntity,ShortSaleResp> shortSaleRespMapper) {
+                       ProductCacheRepository cacheRepository) {
         this.saleRepository = saleRepository;
         this.saleItemRepository = saleItemRepository;
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
         this.stageRepository = stageRepository;
         this.cacheRepository = cacheRepository;
-        this.saleRespMapper = saleRespMapper;
-        this.shortSaleRespMapper = shortSaleRespMapper;
     }
 
     @Transactional
@@ -49,7 +44,7 @@ public class SaleService {
 
         UUID userId = UUID.fromString(saleReq.getUserId());
         CrmUserEntity userEntity = this.userRepository.findCrmUserEntityById(userId).orElseThrow(
-                () -> new CrmUserNotFoundException(saleReq.getUserId(),"Err101"));
+                () -> new CrmUserNotFoundException(saleReq.getUserId()));
 
         SaleStage stage = this.stageRepository.findSaleStageByStage(Stage.CREATED).orElseThrow(
                 () -> new SaleStageNotFoundException("Internal error, sale stage not found","Err999")
@@ -66,19 +61,24 @@ public class SaleService {
         saleEntity.setSumPrice(total);
         SaleEntity saleResult = this.saleRepository.save(saleEntity);
         List<SaleItem> itemsResult = this.saleItemRepository.saveAll(itemsEntities);
-        return this.mapSaleResponse(itemsResult,saleResult);
+        return this.mapSaleCreationResponse(itemsResult,saleResult);
     }
 
     public SaleResponse getSaleBySaleId(String saleId){
         UUID id = UUID.fromString(saleId);
         SaleEntity saleEntity = saleRepository.findSaleEntityById(id).orElseThrow(() -> new SaleNotFoundException(saleId,"Err100"));
-        return this.saleRespMapper.mapFrom(saleEntity);
+        return this.mapSaleResponse(saleEntity);
     }
 
     public List<ShortSaleResp> getSalesByClientId(String clientId){
         UUID id = UUID.fromString(clientId);
         List<SaleEntity> clientsSales = saleRepository.findSaleEntitiesByClientId(id);
-        return clientsSales.stream().map(this.shortSaleRespMapper::mapFrom).toList();
+        return clientsSales.stream().map(sale -> new ShortSaleResp(
+                sale.getId().toString(),
+                sale.getSaleData(),
+                sale.getClient().getName(),
+                sale.getSumPrice().toString()))
+                .toList();
     }
 
     private List<SaleItem> mapSaleItems(List<SaleItemReq> saleItems,SaleEntity saleEntity){
@@ -103,7 +103,7 @@ public class SaleService {
             return itemEntity;
         }).toList();
     }
-    private SaleCreationResp mapSaleResponse(List<SaleItem> items, SaleEntity saleEntity){
+    private SaleCreationResp mapSaleCreationResponse(List<SaleItem> items, SaleEntity saleEntity){
         List<SaleItemResponse> itemsResp = items.stream().map(item ->
                 new SaleItemResponse(
                         item.getId().toString(),
@@ -114,5 +114,25 @@ public class SaleService {
                 .toList();
         return new SaleCreationResp(saleEntity.getId().toString(),saleEntity.getSaleData(),
                 itemsResp,saleEntity.getStage(),saleEntity.getSumPrice());
+    }
+    private SaleResponse mapSaleResponse(SaleEntity saleEntity){
+        List<SaleItemResponse> itemsResp = saleEntity.getSaleItems().stream().map(saleItem -> new SaleItemResponse(
+                saleItem.getId().toString(),
+                saleItem.getName(),
+                saleItem.getUnitPriceAtSale(),
+                saleItem.getAmount(),
+                saleItem.getSumPrice())).toList();
+
+        return new SaleResponse(
+                saleEntity.getId().toString(),
+                saleEntity.getSaleData(),
+                saleEntity.getStage(),
+                itemsResp,
+                saleEntity.getCreatedAt(),
+                saleEntity.getUpdatedAt(),
+                saleEntity.getCheckedAt(),
+                saleEntity.getSumPrice(),
+                saleEntity.getClient().getName(),
+                saleEntity.getClient().getNipNumber());
     }
 }
