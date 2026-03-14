@@ -5,6 +5,7 @@ import org.mailosz.crmrest.crmclient.CrmClientEntity;
 import org.mailosz.crmrest.crmuser.CrmUserEntity;
 import org.mailosz.crmrest.crmuser.UserRepository;
 import org.mailosz.crmrest.exception.types.*;
+import org.mailosz.crmrest.helpers.Mapper;
 import org.mailosz.crmrest.product.ProductCacheRepository;
 import org.mailosz.crmrest.product.ProductState;
 import org.springframework.stereotype.Service;
@@ -23,19 +24,25 @@ public class SaleService {
     private final UserRepository userRepository;
     private final SaleStageRepository stageRepository;
     private final ProductCacheRepository cacheRepository;
+    private final Mapper<SaleEntity,SaleResponse> saleRespMapper;
+    private final Mapper<SaleEntity,ShortSaleResp> shortSaleRespMapper;
 
-    public SaleService(SaleRepository saleRepository, SaleItemRepository saleItemRepository, ClientRepository clientRepository, UserRepository userRepository, SaleStageRepository stageRepository,
-                       ProductCacheRepository cacheRepository) {
+    public SaleService(SaleRepository saleRepository, SaleItemRepository saleItemRepository, ClientRepository clientRepository,
+                       UserRepository userRepository, SaleStageRepository stageRepository,
+                       ProductCacheRepository cacheRepository, Mapper<SaleEntity, SaleResponse> saleRespMapper,
+                       Mapper<SaleEntity,ShortSaleResp> shortSaleRespMapper) {
         this.saleRepository = saleRepository;
         this.saleItemRepository = saleItemRepository;
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
         this.stageRepository = stageRepository;
         this.cacheRepository = cacheRepository;
+        this.saleRespMapper = saleRespMapper;
+        this.shortSaleRespMapper = shortSaleRespMapper;
     }
 
     @Transactional
-    public SaleResponse createSale(SaleCreateReq saleReq){
+    public SaleCreationResp createSale(SaleCreateReq saleReq){
         UUID clientId = UUID.fromString(saleReq.getClientId());
         CrmClientEntity clientEntity = this.clientRepository.findCrmClientEntityById(clientId).orElseThrow(
                 () -> new CrmClientNotFoundException(saleReq.getClientId(),"Err100"));
@@ -62,6 +69,18 @@ public class SaleService {
         return this.mapSaleResponse(itemsResult,saleResult);
     }
 
+    public SaleResponse getSaleBySaleId(String saleId){
+        UUID id = UUID.fromString(saleId);
+        SaleEntity saleEntity = saleRepository.findSaleEntityById(id).orElseThrow(() -> new SaleNotFoundException(saleId,"Err100"));
+        return this.saleRespMapper.mapFrom(saleEntity);
+    }
+
+    public List<ShortSaleResp> getSalesByClientId(String clientId){
+        UUID id = UUID.fromString(clientId);
+        List<SaleEntity> clientsSales = saleRepository.findSaleEntitiesByClientId(id);
+        return clientsSales.stream().map(this.shortSaleRespMapper::mapFrom).toList();
+    }
+
     private List<SaleItem> mapSaleItems(List<SaleItemReq> saleItems,SaleEntity saleEntity){
        return saleItems.stream().map(saleItem -> {
             UUID cacheId = UUID.fromString(saleItem.getProdCacheId());
@@ -84,7 +103,7 @@ public class SaleService {
             return itemEntity;
         }).toList();
     }
-    private SaleResponse mapSaleResponse(List<SaleItem> items, SaleEntity saleEntity){
+    private SaleCreationResp mapSaleResponse(List<SaleItem> items, SaleEntity saleEntity){
         List<SaleItemResponse> itemsResp = items.stream().map(item ->
                 new SaleItemResponse(
                         item.getId().toString(),
@@ -93,7 +112,7 @@ public class SaleService {
                         item.getAmount(),
                         item.getSumPrice()))
                 .toList();
-        return new SaleResponse(saleEntity.getId().toString(),saleEntity.getSaleData(),
-                itemsResp,saleEntity.getStage().getStage().toString(),saleEntity.getSumPrice());
+        return new SaleCreationResp(saleEntity.getId().toString(),saleEntity.getSaleData(),
+                itemsResp,saleEntity.getStage(),saleEntity.getSumPrice());
     }
 }

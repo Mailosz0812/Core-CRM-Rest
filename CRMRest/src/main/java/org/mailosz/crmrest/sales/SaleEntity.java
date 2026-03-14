@@ -39,6 +39,7 @@ public class SaleEntity {
     private OffsetDateTime createdAt;
 
     @UpdateTimestamp
+    @CreationTimestamp
     private OffsetDateTime updatedAt;
     private OffsetDateTime checkedAt;
 
@@ -106,8 +107,8 @@ public class SaleEntity {
         this.user = user;
     }
 
-    public SaleStage getStage() {
-        return stage;
+    public String getStage() {
+        return stage.getStage().toString().toLowerCase();
     }
 
     public void setStage(SaleStage stage) {
