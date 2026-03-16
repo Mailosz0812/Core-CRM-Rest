@@ -7,6 +7,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import org.mailosz.crmrest.exception.types.CRMBaseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -76,5 +77,13 @@ public class GlobalExceptionHandler {
                 "JWT_ERROR"
         );
         return new ResponseEntity<>(errResp,HttpStatus.valueOf(401));
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialException(BadCredentialsException ex){
+        ErrorResponse err = new ErrorResponse(
+                "Authentication error, bad credentials",
+                "AUTH_BAD_CREDENTIALS"
+        );
+        return new ResponseEntity<>(err,HttpStatus.UNAUTHORIZED);
     }
 }
