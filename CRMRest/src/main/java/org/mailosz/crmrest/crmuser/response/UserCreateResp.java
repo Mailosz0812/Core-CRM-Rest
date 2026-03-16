@@ -7,6 +7,9 @@ public class UserCreateResp {
     private String name;
     private String surname;
 
+    public UserCreateResp() {
+    }
+
     public UserCreateResp(String userId, String mail, String name, String surname) {
         this.userId = userId;
         this.mail = mail;

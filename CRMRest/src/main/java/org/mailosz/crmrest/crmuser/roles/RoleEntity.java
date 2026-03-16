@@ -13,4 +13,19 @@ public class RoleEntity {
 
     @Column(name = "role_name", nullable = false)
     private String name;
+
+    public RoleEntity(UUID id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    public RoleEntity() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
