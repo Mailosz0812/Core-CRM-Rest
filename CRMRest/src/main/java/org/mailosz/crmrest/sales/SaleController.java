@@ -23,18 +23,18 @@ public class SaleController {
         SaleCreationResp saleResponse = this.saleService.createSale(saleReq);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("{id}")
+                .path("/{id}")
                 .buildAndExpand(saleResponse.getSaleId())
                 .toUri();
         return ResponseEntity.created(location).body(saleResponse);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public SaleResponse getSale(@PathVariable("id") @UUID String saleId){
         return this.saleService.getSaleBySaleId(saleId);
     }
 
-    @GetMapping("{clientId}")
+    @GetMapping("/client/{clientId}")
     public List<ShortSaleResp> getSalesByClient(@PathVariable("clientId") @UUID String clientId ){
         return this.saleService.getSalesByClientId(clientId);
     }

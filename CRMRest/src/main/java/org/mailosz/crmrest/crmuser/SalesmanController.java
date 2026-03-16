@@ -24,7 +24,7 @@ public class SalesmanController {
     public ResponseEntity<UserCreateResp> createSalesman(@RequestBody @Valid UserCreateReq req) {
         UserCreateResp resp = this.userService.createUser(req, Role.SALESMAN.name());
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
+                .fromPath("/users/admin")
                 .path("/{id}")
                 .buildAndExpand(resp.getUserId())
                 .toUri();
