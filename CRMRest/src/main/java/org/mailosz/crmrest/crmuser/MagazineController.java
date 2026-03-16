@@ -23,7 +23,7 @@ public class MagazineController {
     public ResponseEntity<UserCreateResp> createWarehouseman(@RequestBody @Valid UserCreateReq req){
         UserCreateResp resp = this.userService.createUser(req,Role.MAGAZINE.name());
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
+                .fromPath("/users/admin")
                 .path("/{id}")
                 .buildAndExpand(resp.getUserId())
                 .toUri();
