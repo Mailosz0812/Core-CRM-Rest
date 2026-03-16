@@ -1,5 +1,9 @@
 package org.mailosz.crmrest.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.mailosz.crmrest.exception.types.CRMBaseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,5 +43,38 @@ public class GlobalExceptionHandler {
                 errors
         );
         return new ResponseEntity<>(errResp,ex.getStatusCode());
+    }
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ErrorResponse> handleMalformedException(MalformedJwtException ex){
+        ErrorResponse errResp = new ErrorResponse(
+                "Malformed authentication token",
+                "JWT_MALFORMED"
+        );
+        return new ResponseEntity<>(errResp,HttpStatus.valueOf(401));
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponse> handleExpiredJwtException(ExpiredJwtException ex){
+        ErrorResponse errResp = new ErrorResponse(
+                "Expired authentication token",
+                "JWT_EXPIRED"
+        );
+        return new ResponseEntity<>(errResp,HttpStatus.valueOf(401));
+    }
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<ErrorResponse> handleUnsupportedJwtException(UnsupportedJwtException ex){
+        ErrorResponse errResp = new ErrorResponse(
+                "Unsupported authentication token",
+                "JWT_UNSUPPORTED"
+        );
+        return new ResponseEntity<>(errResp,HttpStatus.valueOf(401));
+    }
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorResponse> handleJwtException(JwtException ex){
+        ErrorResponse errResp = new ErrorResponse(
+                "Jwt error",
+                "JWT_ERROR"
+        );
+        return new ResponseEntity<>(errResp,HttpStatus.valueOf(401));
     }
 }
