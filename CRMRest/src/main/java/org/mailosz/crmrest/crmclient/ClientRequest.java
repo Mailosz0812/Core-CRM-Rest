@@ -17,6 +17,7 @@ public class ClientRequest {
 
     @NotBlank
     @Pattern(regexp = "^\\d+$")
+    @Size(min = 9, max = 9)
     private String phone;
 
 
