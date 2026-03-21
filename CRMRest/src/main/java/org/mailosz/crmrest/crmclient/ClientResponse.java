@@ -1,39 +1,17 @@
 package org.mailosz.crmrest.crmclient;
 
-import jakarta.persistence.*;
-
-import java.util.UUID;
-
-@Entity
-@Table(name = "clients")
-public class CrmClientEntity {
-    @Id
-    @GeneratedValue
-    @Column(updatable = false)
-    private UUID id;
-
-    @Column(name = "client_name", nullable = false)
+public class ClientResponse {
+    private String id;
     private String name;
-
-    @Column(name = "nip", nullable = false, unique = true)
     private String nipNumber;
-
-    @Column(name = "address")
     private String address;
-
-    @Column(name = "phone")
     private String phone;
-
-    @Column(name = "mail")
     private String mail;
-
-    @Column(name = "decisionPerson")
     private String decisionPerson;
 
-    public CrmClientEntity() {
-    }
-
-    public CrmClientEntity(UUID id, String name, String nipNumber, String address, String phone, String mail, String decisionPerson) {
+    public ClientResponse(String id, String name,
+                          String nipNumber, String address,
+                          String phone, String mail, String decisionPerson) {
         this.id = id;
         this.name = name;
         this.nipNumber = nipNumber;
@@ -42,9 +20,14 @@ public class CrmClientEntity {
         this.mail = mail;
         this.decisionPerson = decisionPerson;
     }
+    public ClientResponse(){}
 
-    public UUID getId() {
+    public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

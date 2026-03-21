@@ -9,4 +9,5 @@ import java.util.UUID;
 @Repository
 public interface ClientRepository extends JpaRepository<CrmClientEntity, UUID> {
     Optional<CrmClientEntity> findCrmClientEntityById(UUID id);
+    Optional<CrmClientEntity> findCrmClientEntityByNipNumber(String nipNumber);
 }
