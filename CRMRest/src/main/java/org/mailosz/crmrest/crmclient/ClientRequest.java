@@ -1,10 +1,27 @@
 package org.mailosz.crmrest.crmclient;
 
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.pl.NIP;
+
 public class ClientRequest {
+
+    @NotBlank
     private String name;
+
+    @NotBlank
+    @NIP
     private String nipNumber;
+
+    @NotBlank
     private String address;
+
+    @NotBlank
+    @Pattern(regexp = "^\\d+$")
     private String phone;
+
+
+    @Email
+    @NotBlank
     private String mail;
     private String decisionPerson;
 

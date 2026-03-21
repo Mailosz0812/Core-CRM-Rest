@@ -29,6 +29,6 @@ public class ClientController {
     }
     @GetMapping("/{id}")
     public ClientResponse getClientById(@PathVariable @UUID String id){
-        return this.clientService.getClient(id);
+            return this.clientService.getClient(id);
     }
 }
