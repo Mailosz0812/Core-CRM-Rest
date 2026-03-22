@@ -1,6 +1,6 @@
 package org.mailosz.crmrest.helpers.mapperImpl;
 
-import org.mailosz.crmrest.crmclient.ClientResponse;
+import org.mailosz.crmrest.crmclient.response.ClientResponse;
 import org.mailosz.crmrest.crmclient.CrmClientEntity;
 import org.mailosz.crmrest.helpers.Mapper;
 import org.modelmapper.ModelMapper;
