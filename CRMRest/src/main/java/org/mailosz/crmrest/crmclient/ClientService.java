@@ -3,6 +3,7 @@ package org.mailosz.crmrest.crmclient;
 import org.mailosz.crmrest.crmclient.request.ClientRequest;
 import org.mailosz.crmrest.crmclient.response.ClientResponse;
 import org.mailosz.crmrest.crmclient.response.ClientShortResponse;
+import org.mailosz.crmrest.crmclient.response.ClientWidgetResponse;
 import org.mailosz.crmrest.exception.types.CrmClientAlreadyExistsException;
 import org.mailosz.crmrest.exception.types.CrmClientNotFoundException;
 import org.mailosz.crmrest.helpers.Mapper;
@@ -16,12 +17,15 @@ public class ClientService {
     private final ClientRepository clientRepo;
     private final Mapper<CrmClientEntity, ClientRequest> clientReqMapper;
     private final Mapper<CrmClientEntity, ClientResponse> clientRespMapper;
+    private final Mapper<CrmClientEntity,ClientWidgetResponse> clientWidgetInfoMapper;
 
-    public ClientService(ClientRepository clientRepo, Mapper<CrmClientEntity, ClientRequest> clientReqMapper,
-                         Mapper<CrmClientEntity, ClientResponse> clientRespMapper) {
+    public ClientService(ClientRepository clientRepo, Mapper<CrmClientEntity,
+            ClientRequest> clientReqMapper, Mapper<CrmClientEntity,
+            ClientResponse> clientRespMapper, Mapper<CrmClientEntity, ClientWidgetResponse> clientWidgetInfoMapper) {
         this.clientRepo = clientRepo;
         this.clientReqMapper = clientReqMapper;
         this.clientRespMapper = clientRespMapper;
+        this.clientWidgetInfoMapper = clientWidgetInfoMapper;
     }
 
     public ClientResponse createClient(ClientRequest req){
@@ -39,7 +43,12 @@ public class ClientService {
                 .orElseThrow(() -> new CrmClientNotFoundException(id,"CLIENT_NOT_FOUND"));
         return this.clientRespMapper.mapFrom(clientEntity);
     }
-
+    public ClientWidgetResponse getClientWidgetInfo(String id){
+        UUID clientId = UUID.fromString(id);
+        CrmClientEntity clientEntity = this.clientRepo.findCrmClientEntityById(clientId)
+                .orElseThrow(() -> new CrmClientNotFoundException(id,"CLIENT_NOT_FOUND"));
+        return this.clientWidgetInfoMapper.mapFrom(clientEntity);
+    }
     public List<ClientShortResponse> getAllClients(){
         return this.clientRepo.findAll().stream()
                 .map(client -> new ClientShortResponse(client.getName(),client.getId().toString())

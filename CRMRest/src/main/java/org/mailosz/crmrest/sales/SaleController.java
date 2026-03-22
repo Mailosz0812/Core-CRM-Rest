@@ -2,6 +2,7 @@ package org.mailosz.crmrest.sales;
 
 import jakarta.validation.Valid;
 import org.hibernate.validator.constraints.UUID;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -36,6 +37,6 @@ public class SaleController {
 
     @GetMapping("/client/{clientId}")
     public List<ShortSaleResp> getSalesByClient(@PathVariable("clientId") @UUID String clientId ){
-        return this.saleService.getSalesByClientId(clientId);
+        return this.saleService.getSalesByClientId(clientId, Pageable.unpaged());
     }
 }

@@ -3,14 +3,13 @@ package org.mailosz.crmrest.sales;
 public class ShortSaleResp {
     private String saleId;
     private String saleData;
-    private String clientName;
+    private String stage;
     private String sumPrice;
 
-    public ShortSaleResp(String saleId, String saleData,
-                         String clientName, String sumPrice) {
+    public ShortSaleResp(String saleId, String saleData, String stage, String sumPrice) {
         this.saleId = saleId;
         this.saleData = saleData;
-        this.clientName = clientName;
+        this.stage = stage;
         this.sumPrice = sumPrice;
     }
 
@@ -30,12 +29,12 @@ public class ShortSaleResp {
         this.saleData = saleData;
     }
 
-    public String getClientName() {
-        return clientName;
+    public String getStage() {
+        return stage;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public void setStage(String stage) {
+        this.stage = stage;
     }
 
     public String getSumPrice() {
