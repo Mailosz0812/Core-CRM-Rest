@@ -1,4 +1,4 @@
-package org.mailosz.crmrest.crmclient;
+package org.mailosz.crmrest.crmclient.request;
 
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.pl.NIP;

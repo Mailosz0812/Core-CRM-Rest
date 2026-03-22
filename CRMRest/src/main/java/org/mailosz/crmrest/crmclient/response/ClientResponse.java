@@ -1,4 +1,4 @@
-package org.mailosz.crmrest.crmclient;
+package org.mailosz.crmrest.crmclient.response;
 
 public class ClientResponse {
     private String id;

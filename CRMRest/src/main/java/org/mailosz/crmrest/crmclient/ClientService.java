@@ -1,5 +1,7 @@
 package org.mailosz.crmrest.crmclient;
 
+import org.mailosz.crmrest.crmclient.request.ClientRequest;
+import org.mailosz.crmrest.crmclient.response.ClientResponse;
 import org.mailosz.crmrest.exception.types.CrmClientAlreadyExistsException;
 import org.mailosz.crmrest.exception.types.CrmClientNotFoundException;
 import org.mailosz.crmrest.helpers.Mapper;
@@ -10,8 +12,8 @@ import java.util.UUID;
 @Service
 public class ClientService {
     private final ClientRepository clientRepo;
-    private final Mapper<CrmClientEntity,ClientRequest> clientReqMapper;
-    private final Mapper<CrmClientEntity,ClientResponse> clientRespMapper;
+    private final Mapper<CrmClientEntity, ClientRequest> clientReqMapper;
+    private final Mapper<CrmClientEntity, ClientResponse> clientRespMapper;
 
     public ClientService(ClientRepository clientRepo, Mapper<CrmClientEntity, ClientRequest> clientReqMapper,
                          Mapper<CrmClientEntity, ClientResponse> clientRespMapper) {
