@@ -1,6 +1,7 @@
 package org.mailosz.crmrest.crmclient;
 
 import org.hibernate.validator.constraints.UUID;
+import org.mailosz.crmrest.crmclient.response.ClientDashboardView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

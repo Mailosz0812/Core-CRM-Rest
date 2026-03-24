@@ -1,5 +1,6 @@
 package org.mailosz.crmrest.crmclient;
 
+import org.mailosz.crmrest.crmclient.response.ClientDashboardView;
 import org.mailosz.crmrest.crmclient.response.ClientWidgetResponse;
 import org.mailosz.crmrest.sales.SaleService;
 import org.mailosz.crmrest.sales.ShortSaleResp;
