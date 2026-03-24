@@ -38,14 +38,13 @@ public class SaleService {
     }
 
     @Transactional
-    public SaleCreationResp createSale(SaleCreateReq saleReq){
+    public SaleCreationResp createSale(SaleCreateReq saleReq,String username){
         UUID clientId = UUID.fromString(saleReq.getClientId());
         CrmClientEntity clientEntity = this.clientRepository.findCrmClientEntityById(clientId).orElseThrow(
                 () -> new CrmClientNotFoundException(saleReq.getClientId(),"Err100"));
 
-        UUID userId = UUID.fromString(saleReq.getUserId());
-        CrmUserEntity userEntity = this.userRepository.findCrmUserEntityById(userId).orElseThrow(
-                () -> new CrmUserNotFoundException(saleReq.getUserId()));
+        CrmUserEntity userEntity = this.userRepository.findCrmUserEntityByMail(username).orElseThrow(
+                () -> new CrmUserNotFoundException(username));
 
         SaleStage stage = this.stageRepository.findSaleStageByStage(Stage.CREATED).orElseThrow(
                 () -> new SaleStageNotFoundException("Internal error, sale stage not found","Err999")
@@ -98,6 +97,7 @@ public class SaleService {
             }
             SaleItem itemEntity = new SaleItem();
             itemEntity.setSale(saleEntity);
+            itemEntity.setName(saleItem.getName());
             itemEntity.setAmount(saleItem.getAmount());
             itemEntity.setProduct(prodSate);
             itemEntity.setUnitPriceAtSale(saleItem.getUnitPrice());
