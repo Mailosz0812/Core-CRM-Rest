@@ -61,8 +61,8 @@ public class CrmUserEntity {
         this.password = password;
     }
 
-    public RoleEntity getRole() {
-        return role;
+    public String getRole() {
+        return role.getName();
     }
 
     public void setRole(RoleEntity role) {

@@ -2,28 +2,19 @@ package org.mailosz.crmrest.crmuser.response;
 
 
 public class UserResponse{
-    private String id;
     private String mail;
     private String name;
     private String surname;
+    private String role;
 
-    public UserResponse(String id, String mail, String name, String surname) {
-        this.id = id;
+    public UserResponse(String mail, String name, String surname) {
         this.mail = mail;
         this.name = name;
         this.surname = surname;
     }
 
-    public UserResponse() {
-    }
+    public UserResponse() {}
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getMail() {
         return mail;
@@ -47,5 +38,13 @@ public class UserResponse{
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

@@ -8,6 +8,7 @@ import org.mailosz.crmrest.exception.types.*;
 import org.mailosz.crmrest.helpers.Mapper;
 import org.mailosz.crmrest.product.ProductCacheRepository;
 import org.mailosz.crmrest.product.ProductState;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,14 +38,13 @@ public class SaleService {
     }
 
     @Transactional
-    public SaleCreationResp createSale(SaleCreateReq saleReq){
+    public SaleCreationResp createSale(SaleCreateReq saleReq,String username){
         UUID clientId = UUID.fromString(saleReq.getClientId());
         CrmClientEntity clientEntity = this.clientRepository.findCrmClientEntityById(clientId).orElseThrow(
                 () -> new CrmClientNotFoundException(saleReq.getClientId(),"Err100"));
 
-        UUID userId = UUID.fromString(saleReq.getUserId());
-        CrmUserEntity userEntity = this.userRepository.findCrmUserEntityById(userId).orElseThrow(
-                () -> new CrmUserNotFoundException(saleReq.getUserId()));
+        CrmUserEntity userEntity = this.userRepository.findCrmUserEntityByMail(username).orElseThrow(
+                () -> new CrmUserNotFoundException(username));
 
         SaleStage stage = this.stageRepository.findSaleStageByStage(Stage.CREATED).orElseThrow(
                 () -> new SaleStageNotFoundException("Internal error, sale stage not found","Err999")
@@ -70,13 +70,13 @@ public class SaleService {
         return this.mapSaleResponse(saleEntity);
     }
 
-    public List<ShortSaleResp> getSalesByClientId(String clientId){
+    public List<ShortSaleResp> getSalesByClientId(String clientId, Pageable pageable){
         UUID id = UUID.fromString(clientId);
-        List<SaleEntity> clientsSales = saleRepository.findSaleEntitiesByClientId(id);
+        List<SaleEntity> clientsSales = saleRepository.findSaleEntitiesByClientId(id,pageable);
         return clientsSales.stream().map(sale -> new ShortSaleResp(
                 sale.getId().toString(),
                 sale.getSaleData(),
-                sale.getClient().getName(),
+                sale.getStage(),
                 sale.getSumPrice().toString()))
                 .toList();
     }
@@ -97,6 +97,7 @@ public class SaleService {
             }
             SaleItem itemEntity = new SaleItem();
             itemEntity.setSale(saleEntity);
+            itemEntity.setName(saleItem.getName());
             itemEntity.setAmount(saleItem.getAmount());
             itemEntity.setProduct(prodSate);
             itemEntity.setUnitPriceAtSale(saleItem.getUnitPrice());

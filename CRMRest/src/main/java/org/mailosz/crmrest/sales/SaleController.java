@@ -2,7 +2,10 @@ package org.mailosz.crmrest.sales;
 
 import jakarta.validation.Valid;
 import org.hibernate.validator.constraints.UUID;
+import org.mailosz.crmrest.crmuser.auth.CrmUserDetails;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -19,8 +22,9 @@ public class SaleController {
     }
 
     @PostMapping
-    public ResponseEntity<SaleCreationResp> createSale(@Valid @RequestBody SaleCreateReq saleReq){
-        SaleCreationResp saleResponse = this.saleService.createSale(saleReq);
+    public ResponseEntity<SaleCreationResp> createSale(@Valid @RequestBody SaleCreateReq saleReq,
+                                                       @AuthenticationPrincipal String username){
+        SaleCreationResp saleResponse = this.saleService.createSale(saleReq,username);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -36,6 +40,6 @@ public class SaleController {
 
     @GetMapping("/client/{clientId}")
     public List<ShortSaleResp> getSalesByClient(@PathVariable("clientId") @UUID String clientId ){
-        return this.saleService.getSalesByClientId(clientId);
+        return this.saleService.getSalesByClientId(clientId, Pageable.unpaged());
     }
 }

@@ -80,7 +80,6 @@ class SaleServiceTest {
 
             createReq = new SaleCreateReq(
                     clientId.toString(),
-                    userId.toString(),
                     saleItems, "dummy data");
 
             clientEntity = new CrmClientEntity(
@@ -123,14 +122,21 @@ class SaleServiceTest {
                     new SaleItemResponse(itemId2.toString(), "test2", BigDecimal.ONE, BigDecimal.TEN, BigDecimal.valueOf(10.0))
             );
 
-            expectedSaleResponse = new SaleResponse(saleId.toString(), "dummy data", itemsResp, stageEntity.getStage().toString(), total);
+            expectedSaleResponse = new SaleResponse(
+                    saleId.toString(), "dummy data",
+                    stageEntity.getStage().toString(),
+                    itemsResp,saleEntityRes.getCreatedAt(),
+                    saleEntityRes.getUpdatedAt(),
+                    saleEntityRes.getCheckedAt(),
+                    total, clientEntity.getName(),
+                    clientEntity.getNipNumber());
         }
         @Test
         void shouldCreateSaleSuccessfully(){
 //            Given
             when(clientRepository.findCrmClientEntityById(clientId))
                     .thenReturn(Optional.of(clientEntity));
-            when(userRepository.findCrmUserEntityById(userId))
+            when(userRepository.findCrmUserEntityByMail(userEntity.getName()))
                     .thenReturn(Optional.of(userEntity));
             when(stageRepository.findSaleStageByStage(Stage.CREATED))
                     .thenReturn(Optional.of(stageEntity));
@@ -146,7 +152,7 @@ class SaleServiceTest {
                     .thenReturn(saleItemsRes);
 
 //            When
-            final SaleResponse testResult = saleService.createSale(createReq);
+            final SaleCreationResp testResult = saleService.createSale(createReq, userEntity.getName());
 //            Then
             assertNotNull(testResult);
             assertEquals(expectedSaleResponse.getSaleId(), testResult.getSaleId());
@@ -162,7 +168,7 @@ class SaleServiceTest {
             when(clientRepository.findCrmClientEntityById(clientId))
                     .thenReturn(Optional.empty());
 //            When
-            CrmClientNotFoundException ex = assertThrows(CrmClientNotFoundException.class,() -> saleService.createSale(createReq));
+            CrmClientNotFoundException ex = assertThrows(CrmClientNotFoundException.class,() -> saleService.createSale(createReq, userEntity.getName()));
 //            Then
             verify(clientRepository, times(1)).findCrmClientEntityById(clientId);
             verifyNoInteractions(userRepository,stageRepository,saleRepository,saleItemRepository,cacheRepository);
@@ -175,16 +181,16 @@ class SaleServiceTest {
 //            Given
             when(clientRepository.findCrmClientEntityById(clientId))
                     .thenReturn(Optional.of(clientEntity));
-            when(userRepository.findCrmUserEntityById(userId))
+            when(userRepository.findCrmUserEntityByMail(userEntity.getName()))
                     .thenReturn(Optional.empty());
 //            When
-            CrmUserNotFoundException ex = assertThrows(CrmUserNotFoundException.class,() -> saleService.createSale(createReq));
+            CrmUserNotFoundException ex = assertThrows(CrmUserNotFoundException.class,() -> saleService.createSale(createReq, userEntity.getName()));
 //            Then
             verify(clientRepository, times(1)).findCrmClientEntityById(clientId);
-            verify(userRepository, times(1)).findCrmUserEntityById(userId);
+            verify(userRepository, times(1)).findCrmUserEntityByMail(userEntity.getName());
             verifyNoInteractions(stageRepository,saleRepository,saleItemRepository,cacheRepository);
-            assertEquals(String.format("User with id: %s not found",createReq.getUserId()),ex.getMessage());
-            assertEquals("Err101",ex.getErrorCode());
+            assertEquals(String.format("User with id: %s not found",userEntity.getName()),ex.getMessage());
+            assertEquals("USER_NOT_FOUND",ex.getErrorCode());
 
         }
 
@@ -193,15 +199,15 @@ class SaleServiceTest {
 //            Given
             when(clientRepository.findCrmClientEntityById(clientId))
                     .thenReturn(Optional.of(clientEntity));
-            when(userRepository.findCrmUserEntityById(userId))
+            when(userRepository.findCrmUserEntityByMail(userEntity.getName()))
                     .thenReturn(Optional.of(userEntity));
             when(stageRepository.findSaleStageByStage(any()))
                     .thenReturn(Optional.empty());
 //            When
-            SaleStageNotFoundException ex = assertThrows(SaleStageNotFoundException.class,() -> saleService.createSale(createReq));
+            SaleStageNotFoundException ex = assertThrows(SaleStageNotFoundException.class,() -> saleService.createSale(createReq, userEntity.getName()));
 //            Then
             verify(clientRepository, times(1)).findCrmClientEntityById(clientId);
-            verify(userRepository, times(1)).findCrmUserEntityById(userId);
+            verify(userRepository, times(1)).findCrmUserEntityByMail(userEntity.getName());
             verify(stageRepository, times(1)).findSaleStageByStage(any());
             verifyNoInteractions(saleRepository,saleItemRepository,cacheRepository);
             assertEquals("Internal error, sale stage not found",ex.getMessage());
@@ -213,17 +219,17 @@ class SaleServiceTest {
 //            Given
             when(clientRepository.findCrmClientEntityById(clientId))
                     .thenReturn(Optional.of(clientEntity));
-            when(userRepository.findCrmUserEntityById(userId))
+            when(userRepository.findCrmUserEntityByMail(userEntity.getName()))
                     .thenReturn(Optional.of(userEntity));
             when(stageRepository.findSaleStageByStage(any()))
                     .thenReturn(Optional.of(stageEntity));
             when(cacheRepository.findProductStateById(any()))
                     .thenReturn(Optional.empty());
 //            When
-            ProductCacheNotFoundException ex = assertThrows(ProductCacheNotFoundException.class,() -> saleService.createSale(createReq));
+            ProductCacheNotFoundException ex = assertThrows(ProductCacheNotFoundException.class,() -> saleService.createSale(createReq, userEntity.getName()));
 //            Then
             verify(clientRepository, times(1)).findCrmClientEntityById(clientId);
-            verify(userRepository, times(1)).findCrmUserEntityById(userId);
+            verify(userRepository, times(1)).findCrmUserEntityByMail(userEntity.getName());
             verify(stageRepository, times(1)).findSaleStageByStage(any());
             verify(cacheRepository, times(1)).findProductStateById(any());
             verifyNoInteractions(saleRepository,saleItemRepository);
@@ -237,7 +243,7 @@ class SaleServiceTest {
             stateEntity2.setProductState(BigDecimal.ZERO);
             when(clientRepository.findCrmClientEntityById(clientId))
                     .thenReturn(Optional.of(clientEntity));
-            when(userRepository.findCrmUserEntityById(userId))
+            when(userRepository.findCrmUserEntityByMail(userEntity.getName()))
                     .thenReturn(Optional.of(userEntity));
             when(stageRepository.findSaleStageByStage(any()))
                     .thenReturn(Optional.of(stageEntity));
@@ -246,10 +252,10 @@ class SaleServiceTest {
             when(cacheRepository.findProductStateById(prodStateId2))
                     .thenReturn(Optional.of(stateEntity2));
 //            When
-            ProductOutOfStockException ex = assertThrows(ProductOutOfStockException.class,() -> saleService.createSale(createReq));
+            ProductOutOfStockException ex = assertThrows(ProductOutOfStockException.class,() -> saleService.createSale(createReq,userEntity.getName()));
 //            Then
             verify(clientRepository, times(1)).findCrmClientEntityById(clientId);
-            verify(userRepository, times(1)).findCrmUserEntityById(userId);
+            verify(userRepository, times(1)).findCrmUserEntityByMail(userEntity.getName());
             verify(stageRepository, times(1)).findSaleStageByStage(any());
             verify(cacheRepository, times(2)).findProductStateById(any());
             verifyNoInteractions(saleRepository,saleItemRepository);

@@ -14,9 +14,6 @@ public class SaleCreateReq {
     @UUID
     private String clientId;
 
-    @NotBlank
-    private String userId;
-
     @NotEmpty
     @Valid
     private List<SaleItemReq> saleItems;
@@ -24,10 +21,9 @@ public class SaleCreateReq {
     @NotBlank
     private String saleData;
 
-    public SaleCreateReq(String clientId, String userId,
+    public SaleCreateReq(String clientId,
                          List<SaleItemReq> saleItems, String saleData) {
         this.clientId = clientId;
-        this.userId = userId;
         this.saleItems = saleItems;
         this.saleData = saleData;
     }
@@ -49,14 +45,6 @@ public class SaleCreateReq {
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public List<SaleItemReq> getSaleItems() {

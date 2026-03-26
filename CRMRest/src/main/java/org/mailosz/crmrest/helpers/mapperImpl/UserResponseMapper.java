@@ -12,6 +12,8 @@ public class UserResponseMapper implements Mapper<CrmUserEntity, UserResponse> {
 
     public UserResponseMapper(ModelMapper mapper) {
         this.mapper = mapper;
+        this.mapper.createTypeMap(CrmUserEntity.class, UserResponse.class)
+                .addMapping(CrmUserEntity::getRole,UserResponse::setRole);
     }
 
     @Override
