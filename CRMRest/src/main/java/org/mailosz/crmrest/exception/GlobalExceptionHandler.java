@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,13 @@ public class GlobalExceptionHandler {
                 ex.getMetadata()
         );
         return new ResponseEntity<>(errResp,ex.getStatus());
+    }
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex){
+        ErrorResponse err = new ErrorResponse(
+                "Method argument type mismatch",
+                "ARGUMENT_TYPE_MISMATCH");
+        return new ResponseEntity<>(err,HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -82,7 +90,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadCredentialException(BadCredentialsException ex){
         ErrorResponse err = new ErrorResponse(
                 "Authentication error, bad credentials",
-                "AUTH_BAD_CREDENTIALS"
+                "BAD_CREDENTIALS"
         );
         return new ResponseEntity<>(err,HttpStatus.UNAUTHORIZED);
     }
