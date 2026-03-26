@@ -1,13 +1,16 @@
 package org.mailosz.crmrest.crmclient;
 
 import org.mailosz.crmrest.crmclient.request.ClientRequest;
+import org.mailosz.crmrest.crmclient.request.ClientUpdateReq;
 import org.mailosz.crmrest.crmclient.response.ClientResponse;
 import org.mailosz.crmrest.crmclient.response.ClientShortResponse;
 import org.mailosz.crmrest.crmclient.response.ClientWidgetResponse;
 import org.mailosz.crmrest.exception.types.CrmClientAlreadyExistsException;
 import org.mailosz.crmrest.exception.types.CrmClientNotFoundException;
+import org.mailosz.crmrest.exception.types.CrmUserNotFoundException;
 import org.mailosz.crmrest.helpers.Mapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,10 +40,9 @@ public class ClientService {
         CrmClientEntity savedEntity = this.clientRepo.save(clientEntity);
         return this.clientRespMapper.mapFrom(savedEntity);
     }
-    public ClientResponse getClient(String id){
-        UUID clientId = UUID.fromString(id);
-        CrmClientEntity clientEntity = this.clientRepo.findCrmClientEntityById(clientId)
-                .orElseThrow(() -> new CrmClientNotFoundException(id,"CLIENT_NOT_FOUND"));
+    public ClientResponse getClient(UUID id){
+        CrmClientEntity clientEntity = this.clientRepo.findCrmClientEntityById(id)
+                .orElseThrow(() -> new CrmClientNotFoundException(id.toString(),"CLIENT_NOT_FOUND"));
         return this.clientRespMapper.mapFrom(clientEntity);
     }
     public ClientWidgetResponse getClientWidgetInfo(String id){
@@ -53,5 +55,19 @@ public class ClientService {
         return this.clientRepo.findAll().stream()
                 .map(client -> new ClientShortResponse(client.getName(),client.getId().toString())
                 ).toList();
+    }
+
+    @Transactional
+    public ClientResponse updateClient(ClientUpdateReq req){
+        UUID clientId = UUID.fromString(req.getClientId());
+        CrmClientEntity client = this.clientRepo.findCrmClientEntityById(clientId)
+                .orElseThrow(() -> new CrmClientNotFoundException(req.getClientId(),"CLIENT_NOT_FOUND"));
+        client.setName(req.getName());
+        client.setAddress(req.getAddress());
+        client.setPhone(req.getPhone());
+        client.setMail(req.getMail());
+        client.setDecisionPerson(req.getDecisionPerson());
+
+        return this.clientRespMapper.mapFrom(client);
     }
 }

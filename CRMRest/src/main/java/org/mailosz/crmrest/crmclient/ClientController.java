@@ -1,8 +1,8 @@
 package org.mailosz.crmrest.crmclient;
 
 import jakarta.validation.Valid;
-import org.hibernate.validator.constraints.UUID;
 import org.mailosz.crmrest.crmclient.request.ClientRequest;
+import org.mailosz.crmrest.crmclient.request.ClientUpdateReq;
 import org.mailosz.crmrest.crmclient.response.ClientResponse;
 import org.mailosz.crmrest.crmclient.response.ClientShortResponse;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/client")
@@ -32,12 +33,16 @@ public class ClientController {
         return ResponseEntity.created(location).body(resp);
     }
     @GetMapping("/{id}")
-    public ClientResponse getClientById(@PathVariable @UUID String id){
+    public ClientResponse getClientById(@PathVariable UUID id){
         return this.clientService.getClient(id);
     }
 
     @GetMapping("/list")
     public List<ClientShortResponse> getClients(){
         return this.clientService.getAllClients();
+    }
+    @PutMapping
+    public ClientResponse updateClient(@RequestBody @Valid ClientUpdateReq req){
+        return this.clientService.updateClient(req);
     }
 }
