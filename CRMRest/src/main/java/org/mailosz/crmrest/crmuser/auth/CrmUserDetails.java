@@ -40,7 +40,7 @@ public class CrmUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_"+crmUserEntity.getRole().getName().toUpperCase()));
+        return List.of(new SimpleGrantedAuthority("ROLE_"+crmUserEntity.getRole().toUpperCase()));
     }
 
     @Override
@@ -54,5 +54,8 @@ public class CrmUserDetails implements UserDetails {
     }
     public UUID getUserId(){
         return this.crmUserEntity.getId();
+    }
+    public CrmUserEntity getCrmUserEntity(){
+        return this.crmUserEntity;
     }
 }
