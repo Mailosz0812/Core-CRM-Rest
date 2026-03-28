@@ -2,6 +2,7 @@ package org.mailosz.crmrest.product;
 
 import jakarta.persistence.*;
 import org.mailosz.crmrest.crmclient.CrmClientEntity;
+import org.mailosz.crmrest.prices.PriceListEntity;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -28,16 +29,22 @@ public class ProductEntity {
     private Boolean visibility;
 
     @ManyToOne
-    @JoinColumn(name = "client_id",referencedColumnName = "id")
-    private CrmClientEntity client;
+    @JoinColumn(name = "price_list_id", referencedColumnName = "id", nullable = false)
+    private PriceListEntity priceList;
 
-    public ProductEntity(UUID id, BigDecimal unitPrice, String productName, ProductState productState, Boolean visibility, CrmClientEntity client) {
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
+
+    public ProductEntity(UUID id, BigDecimal unitPrice, String productName, ProductState productState,
+                         Boolean visibility, PriceListEntity priceList, Category category) {
         this.id = id;
         this.unitPrice = unitPrice;
         this.productName = productName;
         this.productState = productState;
         this.visibility = visibility;
-        this.client = client;
+        this.priceList = priceList;
+        this.category = category;
     }
 
     public ProductEntity() {
@@ -45,6 +52,10 @@ public class ProductEntity {
 
     public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public BigDecimal getUnitPrice() {
@@ -79,11 +90,19 @@ public class ProductEntity {
         this.visibility = visibility;
     }
 
-    public CrmClientEntity getClient() {
-        return client;
+    public PriceListEntity getPriceList() {
+        return priceList;
     }
 
-    public void setClient(CrmClientEntity client) {
-        this.client = client;
+    public void setPriceList(PriceListEntity priceList) {
+        this.priceList = priceList;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

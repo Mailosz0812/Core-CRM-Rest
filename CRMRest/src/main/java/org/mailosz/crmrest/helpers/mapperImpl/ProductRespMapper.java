@@ -14,9 +14,6 @@ public class ProductRespMapper implements Mapper<ProductEntity, ProductResponse>
 
     public ProductRespMapper(ModelMapper mapper) {
         this.mapper = mapper;
-        this.mapper.createTypeMap(ProductEntity.class,ProductResponse.class)
-                .addMapping(entity -> entity.getProductState().getCategory(),
-                        ProductResponse::setCategory);
 
     }
 

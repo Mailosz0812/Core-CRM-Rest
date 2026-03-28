@@ -15,49 +15,16 @@ import java.util.UUID;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
-    private final ProductCacheRepository cacheRepository;
-    private  Mapper<ProductEntity,ProductResponse> responseMapper;
-    private final ClientRepository clientRepository;
+    private final Mapper<ProductEntity,ProductResponse> responseMapper;
 
 
-    public ProductService(ProductRepository productRepository, ProductCacheRepository cacheRepository, Mapper<ProductEntity, ProductResponse> responseMapper, ClientRepository clientRepository) {
+    public ProductService(ProductRepository productRepository, Mapper<ProductEntity, ProductResponse> responseMapper) {
         this.productRepository = productRepository;
-        this.cacheRepository = cacheRepository;
         this.responseMapper = responseMapper;
-        this.clientRepository = clientRepository;
     }
 
-    @Transactional
-    public ProductResponse createProduct(ProductCreateReq productReq) {
-        UUID cacheUUID = UUID.fromString(productReq.getCacheId());
-        ProductState cacheEntity = cacheRepository.findProductStateById(cacheUUID).orElseThrow(() -> new ProductCacheNotFoundException(productReq.getCacheId(),"Err100"));
-
-        UUID clientUUID = UUID.fromString(productReq.getClientId());
-        CrmClientEntity clientEntity = this.clientRepository.findCrmClientEntityById(clientUUID).orElseThrow(() -> new CrmClientNotFoundException(productReq.getClientId(),"Err201"));
-
-        ProductEntity finalProduct = productRepository.findProductEntityByClientIdAndProductStateId(clientEntity.getId(),cacheEntity.getId()).map(
-                product -> {
-                    product.setVisibility(true);
-                    product.setUnitPrice(productReq.getUnitPrice());
-                    product.setProductName(productReq.getProductName());
-                    return this.productRepository.save(product);
-                }
-        ).orElseGet(() -> {
-            ProductEntity mappedProdEntity = new ProductEntity();
-            mappedProdEntity.setProductState(cacheEntity);
-            mappedProdEntity.setVisibility(true);
-            mappedProdEntity.setUnitPrice(productReq.getUnitPrice());
-            mappedProdEntity.setProductName(productReq.getProductName());
-            mappedProdEntity.setClient(clientEntity);
-
-            return this.productRepository.save(mappedProdEntity);
-        });
-
-        return this.responseMapper.mapFrom(finalProduct);
-    }
-    public ProductResponse getProduct(String id){
-        UUID prodUUID = UUID.fromString(id);
-        ProductEntity foundProduct = this.productRepository.findProductEntityById(prodUUID).orElseThrow(() -> new ProductNotFoundException(id,"Err102"));
+    public ProductResponse getProduct(UUID id){
+        ProductEntity foundProduct = this.productRepository.findProductEntityById(id).orElseThrow(() -> new ProductNotFoundException(id.toString(),"PRODUCT_NOT_FOUND"));
         return this.responseMapper.mapFrom(foundProduct);
     }
 
