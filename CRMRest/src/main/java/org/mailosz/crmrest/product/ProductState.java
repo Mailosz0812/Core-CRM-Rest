@@ -25,19 +25,14 @@ public class ProductState {
     @Column(name = "product_state", nullable = false,precision = 15,scale = 3)
     private BigDecimal productState;
 
-    @Column(name = "category")
-    @Enumerated(EnumType.STRING)
-    private Category category;
-
     @UpdateTimestamp
     private OffsetDateTime lastUpdate;
 
-    public ProductState(UUID id, String name, String externalId, BigDecimal productState, Category category, OffsetDateTime lastUpdate) {
+    public ProductState(UUID id, String name, String externalId, BigDecimal productState, OffsetDateTime lastUpdate) {
         this.id = id;
         this.name = name;
         this.externalId = externalId;
         this.productState = productState;
-        this.category = category;
         this.lastUpdate = lastUpdate;
     }
 
@@ -46,14 +41,6 @@ public class ProductState {
 
     public UUID getId() {
         return id;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public String getName() {
