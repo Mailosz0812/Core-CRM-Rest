@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -20,7 +21,7 @@ public class ClientDashboardFacade {
         this.saleService = saleService;
     }
 
-    public ClientDashboardView getClientDashboardData(String id){
+    public ClientDashboardView getClientDashboardData(UUID id){
         ClientWidgetResponse clientInfo = clientService.getClientWidgetInfo(id);
         List<ShortSaleResp> sales = this.saleService.getSalesByClientId(id, Pageable.ofSize(5));
         return new ClientDashboardView(clientInfo,sales);

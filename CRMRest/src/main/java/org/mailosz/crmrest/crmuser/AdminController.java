@@ -1,12 +1,13 @@
 package org.mailosz.crmrest.crmuser;
 
-import org.hibernate.validator.constraints.UUID;
-import org.hibernate.validator.internal.constraintvalidators.hv.UUIDValidator;
+
 import org.mailosz.crmrest.crmuser.response.UserResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users/admin")
@@ -18,7 +19,7 @@ public class AdminController {
     }
 
     @GetMapping("/{id}")
-    public UserResponse getUserById(@PathVariable @UUID String id){
+    public UserResponse getUserById(@PathVariable UUID id){
         return this.service.getUserById(id);
     }
 

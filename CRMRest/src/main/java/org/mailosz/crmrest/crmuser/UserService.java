@@ -50,9 +50,8 @@ public class UserService {
         CrmUserEntity saved = userRepo.save(userEntity);
         return this.createMapper.mapFrom(saved);
     }
-    public UserResponse getUserById(String userId){
-        UUID id = UUID.fromString(userId);
-        CrmUserEntity userEntity = this.userRepo.findCrmUserEntityById(id).orElseThrow(() -> new CrmUserNotFoundException(userId));
+    public UserResponse getUserById(UUID userId){
+        CrmUserEntity userEntity = this.userRepo.findCrmUserEntityById(userId).orElseThrow(() -> new CrmUserNotFoundException(userId.toString()));
         return this.respMapper.mapFrom(userEntity);
     }
 }

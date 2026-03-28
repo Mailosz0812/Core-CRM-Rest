@@ -1,8 +1,6 @@
 package org.mailosz.crmrest.sales;
 
 import jakarta.validation.Valid;
-import org.hibernate.validator.constraints.UUID;
-import org.mailosz.crmrest.crmuser.auth.CrmUserDetails;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/sales")
@@ -34,12 +33,12 @@ public class SaleController {
     }
 
     @GetMapping("/{id}")
-    public SaleResponse getSale(@PathVariable("id") @UUID String saleId){
+    public SaleResponse getSale(@PathVariable("id") UUID saleId){
         return this.saleService.getSaleBySaleId(saleId);
     }
 
     @GetMapping("/client/{clientId}")
-    public List<ShortSaleResp> getSalesByClient(@PathVariable("clientId") @UUID String clientId ){
+    public List<ShortSaleResp> getSalesByClient(@PathVariable("clientId") UUID clientId ){
         return this.saleService.getSalesByClientId(clientId, Pageable.unpaged());
     }
 }

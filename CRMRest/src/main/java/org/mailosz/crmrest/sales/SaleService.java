@@ -64,15 +64,13 @@ public class SaleService {
         return this.mapSaleCreationResponse(itemsResult,saleResult);
     }
 
-    public SaleResponse getSaleBySaleId(String saleId){
-        UUID id = UUID.fromString(saleId);
-        SaleEntity saleEntity = saleRepository.findSaleEntityById(id).orElseThrow(() -> new SaleNotFoundException(saleId,"Err100"));
+    public SaleResponse getSaleBySaleId(UUID saleId){
+        SaleEntity saleEntity = saleRepository.findSaleEntityById(saleId).orElseThrow(() -> new SaleNotFoundException(saleId.toString(),"Err100"));
         return this.mapSaleResponse(saleEntity);
     }
 
-    public List<ShortSaleResp> getSalesByClientId(String clientId, Pageable pageable){
-        UUID id = UUID.fromString(clientId);
-        List<SaleEntity> clientsSales = saleRepository.findSaleEntitiesByClientId(id,pageable);
+    public List<ShortSaleResp> getSalesByClientId(UUID clientId, Pageable pageable){
+        List<SaleEntity> clientsSales = saleRepository.findSaleEntitiesByClientId(clientId,pageable);
         return clientsSales.stream().map(sale -> new ShortSaleResp(
                 sale.getId().toString(),
                 sale.getSaleData(),
