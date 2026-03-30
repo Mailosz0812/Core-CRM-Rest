@@ -1,5 +1,6 @@
 package org.mailosz.crmrest.crmclient.response;
 
+import org.mailosz.crmrest.product.Product;
 import org.mailosz.crmrest.sales.ShortSaleResp;
 
 import java.util.List;
@@ -7,10 +8,13 @@ import java.util.List;
 public class ClientDashboardView {
     private ClientWidgetResponse clientInfo;
     private List<ShortSaleResp> recentSales;
+    private List<Product> recentPrices;
 
-    public ClientDashboardView(ClientWidgetResponse clientInfo, List<ShortSaleResp> recentSales) {
+
+    public ClientDashboardView(ClientWidgetResponse clientInfo, List<ShortSaleResp> recentSales, List<Product> recentPrices) {
         this.clientInfo = clientInfo;
         this.recentSales = recentSales;
+        this.recentPrices = recentPrices;
     }
 
     public ClientDashboardView() {}
@@ -21,5 +25,9 @@ public class ClientDashboardView {
 
     public List<ShortSaleResp> getRecentSales() {
         return recentSales;
+    }
+
+    public List<Product> getRecentPrices() {
+        return recentPrices;
     }
 }

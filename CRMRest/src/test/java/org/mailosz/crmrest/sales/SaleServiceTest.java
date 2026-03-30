@@ -96,11 +96,11 @@ class SaleServiceTest {
 
             stateEntity1 = new ProductState(
                     prodStateId, "stateName1", "externalTestId1",
-                    BigDecimal.valueOf(50.0), Category.OTHER, OffsetDateTime.now(ZoneOffset.UTC));
+                    BigDecimal.valueOf(50.0), OffsetDateTime.now(ZoneOffset.UTC));
 
             stateEntity2 = new ProductState(
                     prodStateId2, "stateName2", "externalTestId2",
-                    BigDecimal.valueOf(50.0), Category.OTHER, OffsetDateTime.now(ZoneOffset.UTC));
+                    BigDecimal.valueOf(50.0), OffsetDateTime.now(ZoneOffset.UTC));
 
             saleEntityRes = new SaleEntity(saleId,
                     clientEntity, userEntity,

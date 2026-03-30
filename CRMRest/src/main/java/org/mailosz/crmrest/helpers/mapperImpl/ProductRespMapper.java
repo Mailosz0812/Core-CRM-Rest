@@ -2,31 +2,26 @@ package org.mailosz.crmrest.helpers.mapperImpl;
 
 import org.mailosz.crmrest.helpers.Mapper;
 import org.mailosz.crmrest.product.ProductEntity;
-import org.mailosz.crmrest.product.ProductResponse;
+import org.mailosz.crmrest.product.Product;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
-public class ProductRespMapper implements Mapper<ProductEntity, ProductResponse> {
+public class ProductRespMapper implements Mapper<ProductEntity, Product> {
     private ModelMapper mapper;
 
     public ProductRespMapper(ModelMapper mapper) {
         this.mapper = mapper;
-        this.mapper.createTypeMap(ProductEntity.class,ProductResponse.class)
-                .addMapping(entity -> entity.getProductState().getCategory(),
-                        ProductResponse::setCategory);
 
     }
 
     @Override
-    public ProductEntity mapTo(ProductResponse productResponse) {
+    public ProductEntity mapTo(Product productResponse) {
         return this.mapper.map(productResponse,ProductEntity.class);
     }
 
     @Override
-    public ProductResponse mapFrom(ProductEntity productEntity) {
-        return this.mapper.map(productEntity, ProductResponse.class);
+    public Product mapFrom(ProductEntity productEntity) {
+        return this.mapper.map(productEntity, Product.class);
     }
 }

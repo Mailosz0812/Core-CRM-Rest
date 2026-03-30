@@ -7,6 +7,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import org.mailosz.crmrest.exception.types.CRMBaseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,6 +28,20 @@ public class GlobalExceptionHandler {
                 ex.getMetadata()
         );
         return new ResponseEntity<>(errResp,ex.getStatus());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex){
+        System.out.println(ex.toString());
+        ErrorResponse err = new ErrorResponse(ex.getMessage(),"ILLEGAL_ARGUMENT");
+        return new ResponseEntity<>(err,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageConversionException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageConversionException(HttpMessageConversionException ex){
+        System.out.println(ex.toString());
+        ErrorResponse err = new ErrorResponse(ex.getMessage(),"CONVERSION_EXCEPTION");
+        return new ResponseEntity<>(err,HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex){

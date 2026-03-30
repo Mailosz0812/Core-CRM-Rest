@@ -59,6 +59,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/product").hasAnyRole("ADMIN","SALESMAN")
                         .requestMatchers(HttpMethod.POST,"/sales").hasAnyRole("ADMIN","SALESMAN")
                         .requestMatchers("/client").hasAnyRole("ADMIN","SALESMAN")
+                        .requestMatchers("/prices").hasAnyRole("ADMIN","SALESMAN")
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

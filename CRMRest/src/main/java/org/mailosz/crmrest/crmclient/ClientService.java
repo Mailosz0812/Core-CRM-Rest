@@ -45,10 +45,9 @@ public class ClientService {
                 .orElseThrow(() -> new CrmClientNotFoundException(id.toString(),"CLIENT_NOT_FOUND"));
         return this.clientRespMapper.mapFrom(clientEntity);
     }
-    public ClientWidgetResponse getClientWidgetInfo(String id){
-        UUID clientId = UUID.fromString(id);
-        CrmClientEntity clientEntity = this.clientRepo.findCrmClientEntityById(clientId)
-                .orElseThrow(() -> new CrmClientNotFoundException(id,"CLIENT_NOT_FOUND"));
+    public ClientWidgetResponse getClientWidgetInfo(UUID id){
+        CrmClientEntity clientEntity = this.clientRepo.findCrmClientEntityById(id)
+                .orElseThrow(() -> new CrmClientNotFoundException(id.toString(),"CLIENT_NOT_FOUND"));
         return this.clientWidgetInfoMapper.mapFrom(clientEntity);
     }
     public List<ClientShortResponse> getAllClients(){
