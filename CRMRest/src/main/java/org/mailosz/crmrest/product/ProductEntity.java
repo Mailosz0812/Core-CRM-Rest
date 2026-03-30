@@ -3,6 +3,7 @@ package org.mailosz.crmrest.product;
 import jakarta.persistence.*;
 import org.mailosz.crmrest.crmclient.CrmClientEntity;
 import org.mailosz.crmrest.prices.PriceListEntity;
+import org.mailosz.crmrest.prices.SellingUnit;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -35,9 +36,13 @@ public class ProductEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Enumerated(EnumType.STRING)
+    private SellingUnit unit;
 
-    public ProductEntity(UUID id, BigDecimal unitPrice, String productName, ProductState productState,
-                         Boolean visibility, PriceListEntity priceList, Category category) {
+
+    public ProductEntity(UUID id, BigDecimal unitPrice, String productName,
+                         ProductState productState, Boolean visibility,
+                         PriceListEntity priceList, Category category, SellingUnit unit) {
         this.id = id;
         this.unitPrice = unitPrice;
         this.productName = productName;
@@ -45,6 +50,7 @@ public class ProductEntity {
         this.visibility = visibility;
         this.priceList = priceList;
         this.category = category;
+        this.unit = unit;
     }
 
     public ProductEntity() {
@@ -104,5 +110,13 @@ public class ProductEntity {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public SellingUnit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(SellingUnit unit) {
+        this.unit = unit;
     }
 }

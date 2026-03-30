@@ -1,10 +1,7 @@
 package org.mailosz.crmrest.product;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,11 +16,11 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductResponse getProduct(@PathVariable UUID id){
+    public Product getProduct(@PathVariable UUID id){
         return this.productService.getProduct(id);
     }
     @GetMapping
-    public List<ProductResponse> getAllProducts(){
+    public List<Product> getAllProducts(){
         return this.productService.getAllProducts();
     }
 }

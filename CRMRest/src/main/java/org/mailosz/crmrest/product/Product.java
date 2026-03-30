@@ -4,14 +4,14 @@ import org.mailosz.crmrest.prices.SellingUnit;
 
 import java.math.BigDecimal;
 
-public class ProductResponse {
+public class Product {
     private String id;
     private String name;
     private BigDecimal unitPrice;
     private SellingUnit unit;
     private String category;
 
-    public ProductResponse(String id, String name, BigDecimal unitPrice, SellingUnit unit, String category) {
+    public Product(String id, String name, BigDecimal unitPrice, SellingUnit unit, String category) {
         this.id = id;
         this.name = name;
         this.unitPrice = unitPrice;
@@ -19,7 +19,7 @@ public class ProductResponse {
         this.category = category;
     }
 
-    public ProductResponse() {
+    public Product() {
     }
 
     public String getId() {
