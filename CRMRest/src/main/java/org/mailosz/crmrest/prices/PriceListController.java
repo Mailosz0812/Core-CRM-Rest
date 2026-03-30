@@ -3,11 +3,12 @@ package org.mailosz.crmrest.prices;
 
 import jakarta.validation.Valid;
 import org.mailosz.crmrest.prices.request.PriceListCreationReq;
+import org.mailosz.crmrest.prices.request.PriceListUpdateReq;
 import org.mailosz.crmrest.prices.response.PriceListResponse;
 import org.mailosz.crmrest.prices.response.PriceListShortResp;
-import org.mailosz.crmrest.product.ProductResponse;
+import org.mailosz.crmrest.product.Product;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -45,8 +46,12 @@ public class PriceListController {
         return this.priceService.getPricesListByClientId(id);
     }
     @GetMapping("/items/{id}")
-    public List<ProductResponse> getProductsByListId(@PathVariable UUID id){
+    public List<Product> getProductsByListId(@PathVariable UUID id){
         return this.priceService.getProductsByListId(id);
+    }
+    @PatchMapping("/list")
+    public PriceListResponse updateProducts(@RequestBody @Valid PriceListUpdateReq updateReq){
+        return this.priceService.updateProductsList(updateReq);
     }
 }
 

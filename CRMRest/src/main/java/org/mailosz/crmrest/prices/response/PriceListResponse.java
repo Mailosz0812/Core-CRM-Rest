@@ -1,6 +1,6 @@
 package org.mailosz.crmrest.prices.response;
 
-import org.mailosz.crmrest.product.ProductResponse;
+import org.mailosz.crmrest.product.Product;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -9,9 +9,9 @@ public class PriceListResponse {
     private String id;
     private String title;
     private OffsetDateTime createdAt;
-    private List<ProductResponse> productsList;
+    private List<Product> productsList;
 
-    public PriceListResponse(String id, String title, OffsetDateTime createdAt, List<ProductResponse> productsList) {
+    public PriceListResponse(String id, String title, OffsetDateTime createdAt, List<Product> productsList) {
         this.id = id;
         this.title = title;
         this.createdAt = createdAt;
@@ -45,11 +45,11 @@ public class PriceListResponse {
         this.createdAt = createdAt;
     }
 
-    public List<ProductResponse> getProductsList() {
+    public List<Product> getProductsList() {
         return productsList;
     }
 
-    public void setProductsList(List<ProductResponse> productsList) {
+    public void setProductsList(List<Product> productsList) {
         this.productsList = productsList;
     }
 }
