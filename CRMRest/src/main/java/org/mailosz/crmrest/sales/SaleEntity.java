@@ -51,7 +51,7 @@ public class SaleEntity {
     @Column(name= "warehouse_note")
     private String warehouseNote;
 
-    @Column(name = "sale_date", nullable = false)
+    @Column(name = "sale_date")
     private OffsetDateTime saleDate;
 
     @Column(name = "sale_name", nullable = false)

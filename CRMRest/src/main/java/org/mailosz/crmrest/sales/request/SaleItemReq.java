@@ -18,7 +18,7 @@ public class SaleItemReq {
     public SaleItemReq() {
     }
 
-    public SaleItemReq(UUID prodId, String name, BigDecimal unitPrice, BigDecimal amount) {
+    public SaleItemReq(UUID prodId, BigDecimal amount) {
         this.prodId = prodId;
         this.amount = amount;
     }
