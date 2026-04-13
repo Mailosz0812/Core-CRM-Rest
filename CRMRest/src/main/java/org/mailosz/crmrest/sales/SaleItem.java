@@ -1,6 +1,8 @@
 package org.mailosz.crmrest.sales;
 
 import jakarta.persistence.*;
+import org.mailosz.crmrest.prices.SellingUnit;
+import org.mailosz.crmrest.product.ProductEntity;
 import org.mailosz.crmrest.product.ProductState;
 
 import java.math.BigDecimal;
@@ -20,11 +22,14 @@ public class SaleItem {
     private SaleEntity sale;
 
     @ManyToOne
-    @JoinColumn(name = "product_id",referencedColumnName = "id",nullable = false)
-    private ProductState product;
+    @JoinColumn(name = "product_id",referencedColumnName = "id")
+    private ProductEntity product;
 
     @Column(name = "product_name",nullable = false)
     private String name;
+
+    @Column(name = "internal_name", nullable = false)
+    private String internalName;
 
     @Column(name = "amount",nullable = false,precision = 15, scale = 2)
     private BigDecimal amount;
@@ -35,14 +40,21 @@ public class SaleItem {
     @Column(name = "sum_price", precision = 15, scale = 2,nullable = false)
     private BigDecimal sumPrice;
 
-    public SaleItem(UUID id, SaleEntity sale, ProductState product,
-                    String name, BigDecimal amount, BigDecimal unitPriceAtSale) {
+    @Enumerated(value = EnumType.STRING)
+    private SellingUnit unit;
+
+    public SaleItem(UUID id, SaleEntity sale, ProductEntity product, String name,
+                    String internalName, BigDecimal amount,
+                    BigDecimal unitPriceAtSale, BigDecimal sumPrice, SellingUnit unit) {
         this.id = id;
         this.sale = sale;
         this.product = product;
         this.name = name;
+        this.internalName = internalName;
         this.amount = amount;
         this.unitPriceAtSale = unitPriceAtSale;
+        this.sumPrice = sumPrice;
+        this.unit = unit;
     }
 
     public SaleItem() {
@@ -67,11 +79,11 @@ public class SaleItem {
         this.sale = sale;
     }
 
-    public ProductState getProduct() {
+    public ProductEntity getProduct() {
         return product;
     }
 
-    public void setProduct(ProductState product) {
+    public void setProduct(ProductEntity product) {
         this.product = product;
         calculateSum();
     }
@@ -97,6 +109,22 @@ public class SaleItem {
     public BigDecimal getSumPrice() {
         calculateSum();
         return sumPrice;
+    }
+
+    public SellingUnit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(SellingUnit unit) {
+        this.unit = unit;
+    }
+
+    public String getInternalName() {
+        return internalName;
+    }
+
+    public void setInternalName(String internalName) {
+        this.internalName = internalName;
     }
 
     @PrePersist

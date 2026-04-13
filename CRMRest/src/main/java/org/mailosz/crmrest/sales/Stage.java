@@ -1,11 +1,12 @@
 package org.mailosz.crmrest.sales;
 
 public enum Stage {
-    CREATED,
-    PROSPECTING,
-    QUALIFICATION,
-    OFFER_SENT,
-    NEGOTIATION,
-    CLOSED_WON,
-    CLOSED_LOST
+    NOWA,
+    ODRZUCONA,
+    DO_REALIZACJI,
+    W_TRAKCIE_PAKOWANIA,
+    SPAKOWANA,
+    ZAKONCZONA_NIEKOMPLETNA,
+    ZWROCONA,
+    ZAKONCZONA
 }

@@ -1,20 +1,29 @@
-package org.mailosz.crmrest.sales;
+package org.mailosz.crmrest.sales.response;
+
+import org.mailosz.crmrest.prices.SellingUnit;
 
 import java.math.BigDecimal;
 
 public class SaleItemResponse {
     private String saleItemId;
+    private String prodId;
     private String name;
     private BigDecimal unitPrice;
+    private SellingUnit unit;
     private BigDecimal amount;
     private BigDecimal sumPrice;
+    private String internal;
 
-    public SaleItemResponse(String saleItemId, String name, BigDecimal unitPrice, BigDecimal amount, BigDecimal sumPrice) {
+    public SaleItemResponse(String saleItemId, String prodId, String name, BigDecimal unitPrice,
+                            SellingUnit unit, BigDecimal amount, BigDecimal sumPrice, String internal) {
         this.saleItemId = saleItemId;
+        this.prodId = prodId;
         this.name = name;
         this.unitPrice = unitPrice;
+        this.unit = unit;
         this.amount = amount;
         this.sumPrice = sumPrice;
+        this.internal = internal;
     }
 
     public SaleItemResponse(){}
@@ -57,5 +66,29 @@ public class SaleItemResponse {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public SellingUnit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(SellingUnit unit) {
+        this.unit = unit;
+    }
+
+    public String getInternal() {
+        return internal;
+    }
+
+    public void setInternal(String internal) {
+        this.internal = internal;
+    }
+
+    public String getProdId() {
+        return prodId;
+    }
+
+    public void setProdId(String prodId) {
+        this.prodId = prodId;
     }
 }
