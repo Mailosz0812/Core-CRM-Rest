@@ -5,7 +5,7 @@ import org.mailosz.crmrest.crmclient.response.ClientWidgetResponse;
 import org.mailosz.crmrest.prices.PriceListService;
 import org.mailosz.crmrest.product.Product;
 import org.mailosz.crmrest.sales.SaleService;
-import org.mailosz.crmrest.sales.ShortSaleResp;
+import org.mailosz.crmrest.sales.response.ShortSaleResp;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 

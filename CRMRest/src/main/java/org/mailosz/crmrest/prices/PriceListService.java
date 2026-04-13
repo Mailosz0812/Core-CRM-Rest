@@ -12,7 +12,6 @@ import org.mailosz.crmrest.prices.response.PriceListResponse;
 import org.mailosz.crmrest.prices.response.PriceListShortResp;
 import org.mailosz.crmrest.product.ProductEntity;
 import org.mailosz.crmrest.product.Product;
-import org.mailosz.crmrest.product.ProductService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -134,6 +133,7 @@ public class PriceListService {
         return products.stream().map(product -> {
             ProductEntity prod = new ProductEntity();
             prod.setProductName(product.getName());
+            prod.setInternalName(product.getInternal());
             prod.setUnitPrice(product.getUnitPrice());
             prod.setVisibility(true);
             prod.setCategory(product.getCategory());
@@ -147,6 +147,7 @@ public class PriceListService {
         return products.stream().map(product -> {
             ProductEntity prod = new ProductEntity();
             prod.setProductName(product.getName());
+            prod.setInternalName(product.getInternalName());
             prod.setUnitPrice(product.getUnitPrice());
             prod.setVisibility(true);
             prod.setCategory(product.getProdCategory());
@@ -162,7 +163,8 @@ public class PriceListService {
                 prod.getProductName(),
                 prod.getUnitPrice(),
                 prod.getUnit(),
-                prod.getCategory().name())
+                prod.getCategory().name(),
+                prod.getInternalName())
         ).toList();
     }
 

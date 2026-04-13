@@ -16,11 +16,14 @@ public class ProductEntity {
     @Column(updatable = false)
     private UUID id;
 
-    @Column(name = "unit_price",precision = 15, scale = 2)
+    @Column(name = "unit_price",precision = 15, scale = 2,nullable = false)
     private BigDecimal unitPrice;
 
     @Column(name="prod_name",nullable = false)
     private String productName;
+
+    @Column(name = "internal_name", nullable = false)
+    private String internalName;
 
     @ManyToOne
     @JoinColumn(name = "cache_id", referencedColumnName = "id")
@@ -40,12 +43,11 @@ public class ProductEntity {
     private SellingUnit unit;
 
 
-    public ProductEntity(UUID id, BigDecimal unitPrice, String productName,
-                         ProductState productState, Boolean visibility,
-                         PriceListEntity priceList, Category category, SellingUnit unit) {
+    public ProductEntity(UUID id, BigDecimal unitPrice, String productName, String internalName, ProductState productState, Boolean visibility, PriceListEntity priceList, Category category, SellingUnit unit) {
         this.id = id;
         this.unitPrice = unitPrice;
         this.productName = productName;
+        this.internalName = internalName;
         this.productState = productState;
         this.visibility = visibility;
         this.priceList = priceList;
@@ -118,5 +120,13 @@ public class ProductEntity {
 
     public void setUnit(SellingUnit unit) {
         this.unit = unit;
+    }
+
+    public String getInternalName() {
+        return internalName;
+    }
+
+    public void setInternalName(String internalName) {
+        this.internalName = internalName;
     }
 }

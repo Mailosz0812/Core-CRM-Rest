@@ -7,7 +7,6 @@ import org.mailosz.crmrest.prices.request.PriceListUpdateReq;
 import org.mailosz.crmrest.prices.response.PriceListResponse;
 import org.mailosz.crmrest.prices.response.PriceListShortResp;
 import org.mailosz.crmrest.product.Product;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -48,6 +47,10 @@ public class PriceListController {
     @GetMapping("/items/{id}")
     public List<Product> getProductsByListId(@PathVariable UUID id){
         return this.priceService.getProductsByListId(id);
+    }
+    @GetMapping("/client/{id}")
+    public List<Product> getLatestProducts(@PathVariable UUID id){
+        return this.priceService.getLatestProductsByClientId(id);
     }
     @PatchMapping("/list")
     public PriceListResponse updateProducts(@RequestBody @Valid PriceListUpdateReq updateReq){

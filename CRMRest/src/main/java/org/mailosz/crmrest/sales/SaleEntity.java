@@ -32,7 +32,7 @@ public class SaleEntity {
     @JoinColumn(name = "stage_id", referencedColumnName = "id",nullable = false)
     private SaleStage stage;
 
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale",orphanRemoval = true,cascade = CascadeType.ALL)
     private List<SaleItem> saleItems;
 
     @CreationTimestamp
@@ -48,9 +48,19 @@ public class SaleEntity {
     @Column(name = "sale_data")
     private String saleData;
 
-    public SaleEntity(UUID id, CrmClientEntity client, CrmUserEntity user, SaleStage stage,
-                      List<SaleItem> saleItems, OffsetDateTime createdAt,
-                      OffsetDateTime updatedAt, OffsetDateTime checkedAt, BigDecimal sumPrice, String saleData) {
+    @Column(name= "warehouse_note")
+    private String warehouseNote;
+
+    @Column(name = "sale_date")
+    private OffsetDateTime saleDate;
+
+    @Column(name = "sale_name", nullable = false)
+    private String saleName;
+
+    public SaleEntity(UUID id, CrmClientEntity client, CrmUserEntity user, SaleStage stage, List<SaleItem> saleItems,
+                      OffsetDateTime createdAt, OffsetDateTime updatedAt,
+                      OffsetDateTime checkedAt, BigDecimal sumPrice, String saleData,
+                      String warehouseNote, OffsetDateTime saleDate, String saleName) {
         this.id = id;
         this.client = client;
         this.user = user;
@@ -61,6 +71,9 @@ public class SaleEntity {
         this.checkedAt = checkedAt;
         this.sumPrice = sumPrice;
         this.saleData = saleData;
+        this.warehouseNote = warehouseNote;
+        this.saleDate = saleDate;
+        this.saleName = saleName;
     }
 
     public SaleEntity() {
@@ -106,8 +119,8 @@ public class SaleEntity {
         this.user = user;
     }
 
-    public String getStage() {
-        return stage.getStage().toString().toLowerCase();
+    public Stage getStage() {
+        return stage.getStage();
     }
 
     public void setStage(SaleStage stage) {
@@ -136,5 +149,29 @@ public class SaleEntity {
 
     public void setCheckedAt(OffsetDateTime checkedAt) {
         this.checkedAt = checkedAt;
+    }
+
+    public String getWarehouseNote() {
+        return warehouseNote;
+    }
+
+    public void setWarehouseNote(String warehouseNote) {
+        this.warehouseNote = warehouseNote;
+    }
+
+    public OffsetDateTime getSaleDate() {
+        return saleDate;
+    }
+
+    public void setSaleDate(OffsetDateTime saleDate) {
+        this.saleDate = saleDate;
+    }
+
+    public String getSaleName() {
+        return saleName;
+    }
+
+    public void setSaleName(String saleName) {
+        this.saleName = saleName;
     }
 }

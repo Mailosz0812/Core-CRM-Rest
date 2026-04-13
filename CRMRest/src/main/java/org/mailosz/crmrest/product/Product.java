@@ -10,13 +10,15 @@ public class Product {
     private BigDecimal unitPrice;
     private SellingUnit unit;
     private String category;
+    private String internal;
 
-    public Product(String id, String name, BigDecimal unitPrice, SellingUnit unit, String category) {
+    public Product(String id, String name, BigDecimal unitPrice, SellingUnit unit, String category, String internal) {
         this.id = id;
         this.name = name;
         this.unitPrice = unitPrice;
         this.unit = unit;
         this.category = category;
+        this.internal = internal;
     }
 
     public Product() {
@@ -60,5 +62,13 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getInternal() {
+        return internal;
+    }
+
+    public void setInternal(String internal) {
+        this.internal = internal;
     }
 }

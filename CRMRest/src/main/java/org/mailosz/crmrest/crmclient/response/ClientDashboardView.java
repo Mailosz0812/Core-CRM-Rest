@@ -1,7 +1,7 @@
 package org.mailosz.crmrest.crmclient.response;
 
 import org.mailosz.crmrest.product.Product;
-import org.mailosz.crmrest.sales.ShortSaleResp;
+import org.mailosz.crmrest.sales.response.ShortSaleResp;
 
 import java.util.List;
 
