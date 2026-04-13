@@ -14,6 +14,9 @@ public class ProductUpdateReq {
     @NotBlank
     private String name;
 
+    @NotBlank
+    private String internal;
+
     @NotNull
     @DecimalMin(value = "0.00",message = "Price should be greater than zero")
     private BigDecimal unitPrice;
@@ -24,9 +27,10 @@ public class ProductUpdateReq {
     @NotNull
     private SellingUnit unit;
 
-    public ProductUpdateReq(UUID id, String name, BigDecimal unitPrice, Category category, SellingUnit unit) {
+    public ProductUpdateReq(UUID id, String name, String internalName, BigDecimal unitPrice, Category category, SellingUnit unit) {
         this.id = id;
         this.name = name;
+        this.internal = internalName;
         this.unitPrice = unitPrice;
         this.category = category;
         this.unit = unit;
@@ -39,39 +43,23 @@ public class ProductUpdateReq {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public @NotBlank String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public @NotBlank String getInternal() {
+        return internal;
     }
 
-    public BigDecimal getUnitPrice() {
+    public @NotNull @DecimalMin(value = "0.00", message = "Price should be greater than zero") BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public Category getCategory() {
+    public @NotNull Category getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public SellingUnit getUnit() {
+    public @NotNull SellingUnit getUnit() {
         return unit;
-    }
-
-    public void setUnit(SellingUnit unit) {
-        this.unit = unit;
     }
 }

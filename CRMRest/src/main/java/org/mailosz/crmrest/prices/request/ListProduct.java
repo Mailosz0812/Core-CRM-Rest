@@ -13,6 +13,9 @@ public class ListProduct {
     @NotBlank
     private String name;
 
+    @NotBlank
+    private String internalName;
+
     @NotNull
     @DecimalMin(value = "0.00",message = "Price should be greater than zero")
     private BigDecimal unitPrice;
@@ -23,8 +26,9 @@ public class ListProduct {
     @NotNull
     private Category prodCategory;
 
-    public ListProduct(String name, BigDecimal unitPrice, SellingUnit unit, Category prodCategory) {
+    public ListProduct(String name, String internalName, BigDecimal unitPrice, SellingUnit unit, Category prodCategory) {
         this.name = name;
+        this.internalName = internalName;
         this.unitPrice = unitPrice;
         this.unit = unit;
         this.prodCategory = prodCategory;
@@ -49,4 +53,7 @@ public class ListProduct {
         return prodCategory;
     }
 
+    public @NotBlank String getInternalName() {
+        return internalName;
+    }
 }

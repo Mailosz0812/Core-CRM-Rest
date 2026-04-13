@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ProductCacheRepository extends JpaRepository<ProductState, UUID> {
-    Optional<ProductState> findProductStateById(UUID id);
-    List<ProductState> findAll();
+public interface ProductCacheRepository extends JpaRepository<ProductEntity, UUID> {
+    Optional<ProductEntity> findProductEntityById(UUID id);
 }
