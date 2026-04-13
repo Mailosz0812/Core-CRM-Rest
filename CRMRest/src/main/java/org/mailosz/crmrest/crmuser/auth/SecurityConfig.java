@@ -55,7 +55,10 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/auth").permitAll()
-                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/users/salesman/view").hasRole("SALESMAN")
+                        .requestMatchers(HttpMethod.GET,"/users/magazine/daily").hasRole("MAGAZINE")
+                        .requestMatchers(HttpMethod.POST,"/users/magazine/packed").hasRole("MAGAZINE")
+                        .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,"/product").hasAnyRole("ADMIN","SALESMAN")
                         .requestMatchers(HttpMethod.POST,"/sales").hasAnyRole("ADMIN","SALESMAN")
                         .requestMatchers("/client").hasAnyRole("ADMIN","SALESMAN")
@@ -75,7 +78,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedOrigins(List.of(allowedOrigin));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of(
                 "Authorization",

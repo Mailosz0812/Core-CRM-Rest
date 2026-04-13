@@ -32,7 +32,7 @@ public class AuthenticationService {
         CrmUserDetails userDetails = detailsService.loadUserByUsername(req.getMail());
         CrmUserEntity userEntity = userDetails.getCrmUserEntity();
         String token = this.utils.generateToken(userDetails);
-        return new LoginResponse(token,expiresIn.toSeconds(),this.userMapper.mapFrom(userEntity));
+        return new LoginResponse(token,expiresIn.toMillis(),this.userMapper.mapFrom(userEntity));
     }
 
 }
