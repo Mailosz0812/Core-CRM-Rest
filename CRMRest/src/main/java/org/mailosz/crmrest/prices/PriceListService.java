@@ -4,10 +4,9 @@ import org.mailosz.crmrest.crmclient.ClientRepository;
 import org.mailosz.crmrest.crmclient.CrmClientEntity;
 import org.mailosz.crmrest.exception.types.CrmClientNotFoundException;
 import org.mailosz.crmrest.exception.types.PriceListNotFoundException;
-import org.mailosz.crmrest.prices.request.ListProduct;
-import org.mailosz.crmrest.prices.request.PriceListCreationReq;
-import org.mailosz.crmrest.prices.request.PriceListUpdateReq;
-import org.mailosz.crmrest.prices.request.ProductUpdateReq;
+import org.mailosz.crmrest.exception.types.ProductNotFoundException;
+import org.mailosz.crmrest.prices.request.*;
+import org.mailosz.crmrest.prices.response.BasePriceListResponse;
 import org.mailosz.crmrest.prices.response.PriceListResponse;
 import org.mailosz.crmrest.prices.response.PriceListShortResp;
 import org.mailosz.crmrest.product.ProductEntity;
@@ -27,10 +26,15 @@ import java.util.stream.Collectors;
 @Service
 public class PriceListService {
     private final PriceListRepository priceRepository;
+    private final IndividualPriceListRepository individualRepository;
+    private final BasePriceListRepository baseRepository;
     private final ClientRepository clientRepo;
 
-    public PriceListService(PriceListRepository priceRepository, ClientRepository clientRepo) {
+    public PriceListService(PriceListRepository priceRepository, IndividualPriceListRepository individualRepository,
+                            BasePriceListRepository baseRepository, ClientRepository clientRepo) {
         this.priceRepository = priceRepository;
+        this.individualRepository = individualRepository;
+        this.baseRepository = baseRepository;
         this.clientRepo = clientRepo;
     }
 
@@ -41,12 +45,12 @@ public class PriceListService {
                 .orElseThrow(() -> new CrmClientNotFoundException(creationReq.getClientId(), "CLIENT_NOT_FOUND"));
 
 
-        PriceListEntity priceList = new PriceListEntity();
+        IndividualPriceList priceList = new IndividualPriceList();
         List<ProductEntity> products = this.mapProducts(creationReq.getItems(), priceList);
         priceList.setProducts(products);
         priceList.setClient(client);
         priceList.setTitle(creationReq.getListTitle());
-        PriceListEntity savedList = this.priceRepository.save(priceList);
+        IndividualPriceList savedList = this.priceRepository.save(priceList);
         System.out.println(savedList);
         return new PriceListResponse(
                 savedList.getId().toString(),
@@ -55,13 +59,43 @@ public class PriceListService {
                 this.mapProductResponse(savedList.getProducts())
         );
     }
+    @Transactional
+    public BasePriceListResponse patchBasePriceList(BasePriceListCreationReq req){
+        BasePriceList priceList = this.baseRepository.findFirst().orElseGet(() -> this.baseRepository.save(new BasePriceList()));
+
+        List<ProductUpdateReq> productsList = req.getProductList();
+
+        Map<UUID,ProductEntity> existingEntities = priceList.getProducts().stream()
+                .collect(Collectors.toMap(ProductEntity::getId,p -> p));
+
+        for (ProductUpdateReq prodReq : productsList) {
+            UUID currId = prodReq.getId();
+            ProductEntity prod = new ProductEntity();
+            if(currId != null){
+                prod = existingEntities.get(currId);
+                if(prod == null){
+                    throw new ProductNotFoundException(currId.toString(),"PROD_NOT_FOUND");
+                }
+            }else{
+                prod.setPriceList(priceList);
+                prod.setVisibility(true);
+                priceList.getProducts().add(prod);
+            }
+            prod.setProductName(prodReq.getName());
+            prod.setUnitPrice(prodReq.getUnitPrice());
+            prod.setInternalName(prodReq.getInternal());
+            prod.setCategory(prodReq.getCategory());
+            prod.setUnit(prodReq.getUnit());
+        }
+        return new BasePriceListResponse(this.mapProductResponse(priceList.getProducts()));
+    }
 
     public PriceListResponse getPriceListById(UUID id){
         PriceListEntity priceList = this.priceRepository.findPriceListEntityById(id)
                 .orElseThrow(() -> new PriceListNotFoundException(id.toString(),"PRICE_LIST_NOT_FOUND"));
         return new PriceListResponse(
                 priceList.getId().toString(),
-                priceList.getTitle(),
+                priceList instanceof IndividualPriceList ? ((IndividualPriceList) priceList).getTitle(): "INDIVIDUAL",
                 priceList.getCreatedAt(),
                 this.mapProductResponse(priceList.getProducts())
         );
@@ -71,7 +105,7 @@ public class PriceListService {
         this.clientRepo.findCrmClientEntityById(id).orElseThrow(() ->
                 new CrmClientNotFoundException(id.toString(),"CLIENT_NOT_FOUND")
         );
-        List<PriceListEntity> prices = this.priceRepository.findPriceListEntitiesByClient_Id(id,Pageable.unpaged());
+        List<IndividualPriceList> prices = this.individualRepository.findPriceListEntitiesByClient_Id(id,Pageable.unpaged());
         return this.mapPriceListShort(prices);
     }
 
@@ -80,7 +114,7 @@ public class PriceListService {
                 new CrmClientNotFoundException(id.toString(),"CLIENT_NOT_FOUND")
         );
         Pageable latestOne = PageRequest.of(0, 1, Sort.by("createdAt").descending());
-        List<PriceListEntity> latestPrices = this.priceRepository.findPriceListEntitiesByClient_Id(id,latestOne);
+        List<IndividualPriceList> latestPrices = this.individualRepository.findPriceListEntitiesByClient_Id(id,latestOne);
         if(latestPrices.isEmpty()){
             return Collections.emptyList();
         }
@@ -108,7 +142,7 @@ public class PriceListService {
         PriceListEntity savedList = this.priceRepository.save(listEntity);
         return new PriceListResponse(
                 savedList.getId().toString(),
-                savedList.getTitle(),
+                savedList instanceof IndividualPriceList ? ((IndividualPriceList) savedList).getTitle(): "INDIVIDUAL",
                 savedList.getCreatedAt(),
                 this.mapProductResponse(savedList.getProducts())
         );
@@ -168,7 +202,7 @@ public class PriceListService {
         ).toList();
     }
 
-    private List<PriceListShortResp> mapPriceListShort(List<PriceListEntity> prices){
+    private List<PriceListShortResp> mapPriceListShort(List<IndividualPriceList> prices){
         return prices.stream().map(price -> new PriceListShortResp(
                 price.getId().toString(),
                 price.getTitle(),

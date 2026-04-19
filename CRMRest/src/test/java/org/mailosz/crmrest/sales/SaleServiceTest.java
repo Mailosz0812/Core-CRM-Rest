@@ -116,8 +116,6 @@ class SaleServiceTest {
             stageEntity = new SaleStage(stageId, Stage.NOWA);
             priceList = new PriceListEntity(
                     priceListId,
-                    clientEntity,
-                    "Dummy title",
                     OffsetDateTime.now(),
                     productsList
             );
