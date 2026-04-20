@@ -43,6 +43,11 @@ public class PriceListController {
         return this.priceService.patchBasePriceList(req);
     }
 
+    @GetMapping("/base")
+    public BasePriceListResponse getBasePriceList(){
+        return this.priceService.getBasePriceList();
+    }
+
     @GetMapping("/{id}")
     public PriceListResponse getPriceList(@PathVariable UUID id){
         return this.priceService.getPriceListById(id);

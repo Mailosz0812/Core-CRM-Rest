@@ -11,8 +11,8 @@ import java.util.UUID;
 @Entity
 @DiscriminatorValue("BASE")
 public class BasePriceList extends PriceListEntity{
-    public BasePriceList(UUID id, String title, OffsetDateTime createdAt, List<ProductEntity> products) {
-        super(id, title, createdAt, products);
+    public BasePriceList(UUID id, OffsetDateTime createdAt, List<ProductEntity> products) {
+        super(id, createdAt, products);
     }
 
     public BasePriceList() {

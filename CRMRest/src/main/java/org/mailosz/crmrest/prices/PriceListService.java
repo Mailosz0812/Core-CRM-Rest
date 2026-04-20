@@ -17,10 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,8 +58,11 @@ public class PriceListService {
     }
     @Transactional
     public BasePriceListResponse patchBasePriceList(BasePriceListCreationReq req){
-        BasePriceList priceList = this.baseRepository.findFirst().orElseGet(() -> this.baseRepository.save(new BasePriceList()));
-
+        BasePriceList priceList = this.baseRepository.findFirstBy().orElseGet(() -> {
+            BasePriceList saved = this.baseRepository.save(new BasePriceList());
+            saved.setProducts(new ArrayList<>());
+            return saved;
+        });
         List<ProductUpdateReq> productsList = req.getProductList();
 
         Map<UUID,ProductEntity> existingEntities = priceList.getProducts().stream()
@@ -87,9 +87,14 @@ public class PriceListService {
             prod.setCategory(prodReq.getCategory());
             prod.setUnit(prodReq.getUnit());
         }
-        return new BasePriceListResponse(this.mapProductResponse(priceList.getProducts()));
+        BasePriceList savedList = this.priceRepository.save(priceList);
+        return new BasePriceListResponse(this.mapProductResponse(savedList.getProducts()));
     }
 
+    public BasePriceListResponse getBasePriceList(){
+        BasePriceList priceList = this.baseRepository.findFirstBy().orElseThrow(() -> new PriceListNotFoundException("BASE","PRICE_LIST_NOT_FOUND"));
+        return new BasePriceListResponse(this.mapProductResponse(priceList.getProducts()));
+    }
     public PriceListResponse getPriceListById(UUID id){
         PriceListEntity priceList = this.priceRepository.findPriceListEntityById(id)
                 .orElseThrow(() -> new PriceListNotFoundException(id.toString(),"PRICE_LIST_NOT_FOUND"));
