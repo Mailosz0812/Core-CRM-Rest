@@ -243,8 +243,10 @@ public class SaleService {
            itemEntity.setName(prodItem.getProductName());
            itemEntity.setInternalName(prodItem.getInternalName());
            itemEntity.setAmount(saleItem.getAmount());
-           itemEntity.setUnitPriceAtSale(prodItem.getUnitPrice());
-           itemEntity.setUnit(prodItem.getUnit());
+           itemEntity.setUnitPriceAtSale(saleItem.getUnitPrice());
+           itemEntity.setUnit(saleItem.getUnit());
+           itemEntity.setTps(saleItem.getTps());
+
             return itemEntity;
         }).collect(Collectors.toList());
     }
@@ -274,7 +276,8 @@ public class SaleService {
                         item.getUnit(),
                         item.getAmount(),
                         item.getSumPrice(),
-                        item.getInternalName()))
+                        item.getInternalName(),
+                        item.getTps()))
                 .toList();
         return new SaleCreationResp(
                 saleEntity.getId().toString(),

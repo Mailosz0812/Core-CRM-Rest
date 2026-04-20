@@ -3,6 +3,7 @@ package org.mailosz.crmrest.product;
 import org.mailosz.crmrest.prices.SellingUnit;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 public class Product {
     private String id;
@@ -11,14 +12,17 @@ public class Product {
     private SellingUnit unit;
     private String category;
     private String internal;
+    private OffsetDateTime tps;
 
-    public Product(String id, String name, BigDecimal unitPrice, SellingUnit unit, String category, String internal) {
+
+    public Product(String id, String name, BigDecimal unitPrice, SellingUnit unit, String category, String internal, OffsetDateTime tps) {
         this.id = id;
         this.name = name;
         this.unitPrice = unitPrice;
         this.unit = unit;
         this.category = category;
         this.internal = internal;
+        this.tps = tps;
     }
 
     public Product() {
@@ -70,5 +74,13 @@ public class Product {
 
     public void setInternal(String internal) {
         this.internal = internal;
+    }
+
+    public OffsetDateTime getTps() {
+        return tps;
+    }
+
+    public void setTps(OffsetDateTime tps) {
+        this.tps = tps;
     }
 }

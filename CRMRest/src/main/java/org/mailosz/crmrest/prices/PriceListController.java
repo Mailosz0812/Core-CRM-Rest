@@ -1,5 +1,4 @@
 package org.mailosz.crmrest.prices;
-//TODO encja cennika (jest juz w bazie), kontroler, serwis
 
 import jakarta.validation.Valid;
 import org.mailosz.crmrest.prices.request.BasePriceListCreationReq;

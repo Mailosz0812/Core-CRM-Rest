@@ -9,20 +9,19 @@ import java.util.List;
 
 public class BasePriceListCreationReq {
 
-    @NotNull
     @NotEmpty
     @Valid
-    private List<@Valid ProductUpdateReq> productList;
+    private List<ProductUpdateReq> productList;
 
     public BasePriceListCreationReq(List<@Valid ProductUpdateReq> productList) {
         this.productList = productList;
     }
 
-    public @NotNull @NotEmpty @Valid List<@Valid ProductUpdateReq> getProductList() {
+    public @NotEmpty @Valid List<@Valid ProductUpdateReq> getProductList() {
         return productList;
     }
 
-    public void setProductList(@NotNull @NotEmpty @Valid List<@Valid ProductUpdateReq> productList) {
+    public void setProductList(@NotEmpty @Valid List<@Valid ProductUpdateReq> productList) {
         this.productList = productList;
     }
 }

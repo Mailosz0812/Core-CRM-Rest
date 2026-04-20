@@ -1,10 +1,12 @@
 package org.mailosz.crmrest.prices.request;
 
 import jakarta.validation.constraints.*;
+import org.mailosz.crmrest.helpers.validator.TpsDate;
 import org.mailosz.crmrest.prices.SellingUnit;
 import org.mailosz.crmrest.product.Category;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class ProductUpdateReq {
@@ -27,13 +29,20 @@ public class ProductUpdateReq {
     @NotNull
     private SellingUnit unit;
 
-    public ProductUpdateReq(UUID id, String name, String internalName, BigDecimal unitPrice, Category category, SellingUnit unit) {
+    @NotNull
+    @TpsDate
+    private OffsetDateTime tps;
+
+    public ProductUpdateReq(UUID id, String name, String internal,
+                            BigDecimal unitPrice, Category category,
+                            SellingUnit unit, OffsetDateTime tps) {
         this.id = id;
         this.name = name;
-        this.internal = internalName;
+        this.internal = internal;
         this.unitPrice = unitPrice;
         this.category = category;
         this.unit = unit;
+        this.tps = tps;
     }
 
     public ProductUpdateReq() {
@@ -61,5 +70,9 @@ public class ProductUpdateReq {
 
     public @NotNull SellingUnit getUnit() {
         return unit;
+    }
+
+    public @NotNull OffsetDateTime getTps() {
+        return tps;
     }
 }

@@ -3,6 +3,7 @@ package org.mailosz.crmrest.sales.response;
 import org.mailosz.crmrest.prices.SellingUnit;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 public class SaleItemResponse {
     private String saleItemId;
@@ -13,9 +14,10 @@ public class SaleItemResponse {
     private BigDecimal amount;
     private BigDecimal sumPrice;
     private String internal;
+    private OffsetDateTime tps;
 
-    public SaleItemResponse(String saleItemId, String prodId, String name, BigDecimal unitPrice,
-                            SellingUnit unit, BigDecimal amount, BigDecimal sumPrice, String internal) {
+    public SaleItemResponse(String saleItemId, String prodId, String name, BigDecimal unitPrice, SellingUnit unit,
+                            BigDecimal amount, BigDecimal sumPrice, String internal, OffsetDateTime tps) {
         this.saleItemId = saleItemId;
         this.prodId = prodId;
         this.name = name;
@@ -24,6 +26,7 @@ public class SaleItemResponse {
         this.amount = amount;
         this.sumPrice = sumPrice;
         this.internal = internal;
+        this.tps = tps;
     }
 
     public SaleItemResponse(){}
@@ -90,5 +93,13 @@ public class SaleItemResponse {
 
     public void setProdId(String prodId) {
         this.prodId = prodId;
+    }
+
+    public OffsetDateTime getTps() {
+        return tps;
+    }
+
+    public void setTps(OffsetDateTime tps) {
+        this.tps = tps;
     }
 }

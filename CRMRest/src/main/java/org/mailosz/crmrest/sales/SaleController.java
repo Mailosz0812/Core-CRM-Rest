@@ -56,9 +56,10 @@ public class SaleController {
     }
 
     @PostMapping("/stage")
-    public SaleCreationResp createStage(@RequestBody @Valid StageOperationReq req){
+    public SaleCreationResp changeStage(@RequestBody @Valid StageOperationReq req){
         return this.saleService.modifySaleStage(req);
     }
+
     @PutMapping
     public SaleCreationResp updateSale(@RequestBody @Valid SaleUpdateReq req){
         return this.saleService.updateSale(req);

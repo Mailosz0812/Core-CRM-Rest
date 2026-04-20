@@ -2,16 +2,19 @@ package org.mailosz.crmrest.prices.request;
 
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.UUID;
 
 public class PriceListUpdateReq {
+
+    @NotNull
     private UUID listId;
 
     @Valid
-    @NotNull
+    @NotEmpty
     private List<ProductUpdateReq> products;
 
     public PriceListUpdateReq(UUID listId, List<ProductUpdateReq> products) {

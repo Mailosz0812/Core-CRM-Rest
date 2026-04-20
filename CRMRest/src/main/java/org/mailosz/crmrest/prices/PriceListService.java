@@ -86,6 +86,7 @@ public class PriceListService {
             prod.setInternalName(prodReq.getInternal());
             prod.setCategory(prodReq.getCategory());
             prod.setUnit(prodReq.getUnit());
+            prod.setTps(prodReq.getTps());
         }
         BasePriceList savedList = this.priceRepository.save(priceList);
         return new BasePriceListResponse(this.mapProductResponse(savedList.getProducts()));
@@ -178,6 +179,7 @@ public class PriceListService {
             prod.setCategory(product.getCategory());
             prod.setUnit(product.getUnit());
             prod.setPriceList(priceList);
+            prod.setTps(product.getTps());
             return prod;
         }).toList();
     }
@@ -192,6 +194,7 @@ public class PriceListService {
             prod.setCategory(product.getProdCategory());
             prod.setUnit(product.getUnit());
             prod.setPriceList(priceList);
+            prod.setTps(product.getTps());
             return prod;
         }).toList();
     }
@@ -203,7 +206,8 @@ public class PriceListService {
                 prod.getUnitPrice(),
                 prod.getUnit(),
                 prod.getCategory().name(),
-                prod.getInternalName())
+                prod.getInternalName(),
+                prod.getTps())
         ).toList();
     }
 
