@@ -171,7 +171,7 @@ public class SaleService {
         }else{
             tomorrowStart = OffsetDateTime.now();
         }
-        tomorrowStart
+        tomorrowStart = tomorrowStart
                 .plusDays(1)
                 .truncatedTo(ChronoUnit.DAYS);
         List<SaleEntity> dailySales = this.saleRepository.findSaleEntitiesBySaleDateBeforeAndStage_Stage(tomorrowStart,Stage.DO_REALIZACJI);
@@ -262,6 +262,8 @@ public class SaleService {
                     itemEntity.setAmount(item.getAmount());
                     itemEntity.setUnitPriceAtSale(item.getUnitPrice());
                     itemEntity.setUnit(item.getUnit());
+                    itemEntity.setTps(item.getTps());
+                    itemEntity.setPack(item.getPack());
                     return itemEntity;
                 })
                 .collect(Collectors.toList());
@@ -277,7 +279,8 @@ public class SaleService {
                         item.getAmount(),
                         item.getSumPrice(),
                         item.getInternalName(),
-                        item.getTps()))
+                        item.getTps(),
+                        item.getPack()))
                 .toList();
         return new SaleCreationResp(
                 saleEntity.getId().toString(),
