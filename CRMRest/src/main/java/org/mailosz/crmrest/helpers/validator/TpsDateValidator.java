@@ -12,6 +12,10 @@ public class TpsDateValidator implements ConstraintValidator<TpsDate, OffsetDate
     public boolean isValid(OffsetDateTime value, ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
 
+        if(value == null){
+            return true;
+        }
+
         OffsetDateTime marginDate = OffsetDateTime.now()
                 .minusDays(7)
                 .truncatedTo(ChronoUnit.DAYS);
