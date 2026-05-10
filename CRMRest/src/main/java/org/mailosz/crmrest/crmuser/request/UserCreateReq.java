@@ -4,7 +4,7 @@ package org.mailosz.crmrest.crmuser.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.mailosz.crmrest.crmuser.ValidPassword;
+import org.mailosz.crmrest.helpers.validator.ValidPassword;
 
 @ValidPassword
 public class UserCreateReq {

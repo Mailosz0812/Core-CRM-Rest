@@ -1,4 +1,4 @@
-package org.mailosz.crmrest.crmuser;
+package org.mailosz.crmrest.helpers.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

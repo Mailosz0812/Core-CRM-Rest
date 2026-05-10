@@ -29,4 +29,7 @@ public class ProductService {
                 entity -> this.responseMapper.mapFrom(entity)
         ).toList();
     }
+    public List<String> getProducers(){
+        return this.productRepository.findDistinctProducers();
+    }
  }

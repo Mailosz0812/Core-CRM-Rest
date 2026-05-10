@@ -7,6 +7,7 @@ import org.mailosz.crmrest.product.ProductState;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -43,9 +44,14 @@ public class SaleItem {
     @Enumerated(value = EnumType.STRING)
     private SellingUnit unit;
 
-    public SaleItem(UUID id, SaleEntity sale, ProductEntity product, String name,
-                    String internalName, BigDecimal amount,
-                    BigDecimal unitPriceAtSale, BigDecimal sumPrice, SellingUnit unit) {
+    private OffsetDateTime tps;
+
+    private String pack;
+
+    public SaleItem(UUID id, SaleEntity sale, ProductEntity product,
+                    String name, String internalName,
+                    BigDecimal amount, BigDecimal unitPriceAtSale,
+                    BigDecimal sumPrice, SellingUnit unit, OffsetDateTime tps, String pack) {
         this.id = id;
         this.sale = sale;
         this.product = product;
@@ -55,6 +61,8 @@ public class SaleItem {
         this.unitPriceAtSale = unitPriceAtSale;
         this.sumPrice = sumPrice;
         this.unit = unit;
+        this.tps = tps;
+        this.pack = pack;
     }
 
     public SaleItem() {
@@ -125,6 +133,26 @@ public class SaleItem {
 
     public void setInternalName(String internalName) {
         this.internalName = internalName;
+    }
+
+    public OffsetDateTime getTps() {
+        return tps;
+    }
+
+    public void setTps(OffsetDateTime tps) {
+        this.tps = tps;
+    }
+
+    public void setSumPrice(BigDecimal sumPrice) {
+        this.sumPrice = sumPrice;
+    }
+
+    public String getPack() {
+        return pack;
+    }
+
+    public void setPack(String pack) {
+        this.pack = pack;
     }
 
     @PrePersist

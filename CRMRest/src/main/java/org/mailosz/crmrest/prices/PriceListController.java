@@ -1,9 +1,10 @@
 package org.mailosz.crmrest.prices;
-//TODO encja cennika (jest juz w bazie), kontroler, serwis
 
 import jakarta.validation.Valid;
+import org.mailosz.crmrest.prices.request.BasePriceListOperationReq;
 import org.mailosz.crmrest.prices.request.PriceListCreationReq;
 import org.mailosz.crmrest.prices.request.PriceListUpdateReq;
+import org.mailosz.crmrest.prices.response.BasePriceListResponse;
 import org.mailosz.crmrest.prices.response.PriceListResponse;
 import org.mailosz.crmrest.prices.response.PriceListShortResp;
 import org.mailosz.crmrest.product.Product;
@@ -26,7 +27,7 @@ public class PriceListController {
     }
 
     @PostMapping()
-    public ResponseEntity<PriceListResponse> createPriceList(@RequestBody @Valid PriceListCreationReq req){
+    public ResponseEntity<PriceListResponse> createIndividualPriceList(@RequestBody @Valid PriceListCreationReq req){
         PriceListResponse resp = this.priceService.createPriceList(req);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
@@ -34,6 +35,16 @@ public class PriceListController {
                 .buildAndExpand(resp.getId())
                 .toUri();
         return ResponseEntity.created(location).body(resp);
+    }
+
+    @PatchMapping("/base")
+    public BasePriceListResponse updateBasePriceList(@RequestBody @Valid BasePriceListOperationReq req){
+        return this.priceService.patchBasePriceList(req);
+    }
+
+    @GetMapping("/base")
+    public BasePriceListResponse getBasePriceList(){
+        return this.priceService.getBasePriceList();
     }
 
     @GetMapping("/{id}")

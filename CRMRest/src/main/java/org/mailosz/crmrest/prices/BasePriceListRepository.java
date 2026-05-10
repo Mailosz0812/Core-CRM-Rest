@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface PriceListRepository extends JpaRepository<PriceListEntity, UUID> {
-    Optional<PriceListEntity> findPriceListEntityById(UUID id);
-
+public interface BasePriceListRepository extends JpaRepository<BasePriceList, UUID> {
+    Optional<BasePriceList> findFirstBy();
 }

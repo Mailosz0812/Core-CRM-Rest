@@ -1,7 +1,7 @@
 package org.mailosz.crmrest.sales.request;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
@@ -13,11 +13,9 @@ public class SaleCreateReq {
     @NotNull
     private UUID clientId;
 
-    @NotNull
     @Valid
     private List<SaleItemReq> saleItems;
 
-    @NotNull
     @Valid
     private List<CustomSaleItem> customItems;
 
@@ -25,7 +23,7 @@ public class SaleCreateReq {
 
     private String warehouseNote;
 
-    @NotEmpty
+    @NotBlank
     private String saleName;
 
 

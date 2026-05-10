@@ -23,4 +23,9 @@ public class ProductController {
     public List<Product> getAllProducts(){
         return this.productService.getAllProducts();
     }
+
+    @GetMapping("/producers")
+    public List<String> getProducers(){
+        return this.productService.getProducers();
+    }
 }
