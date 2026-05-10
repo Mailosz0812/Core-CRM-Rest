@@ -15,9 +15,12 @@ public class SaleItemResponse {
     private BigDecimal sumPrice;
     private String internal;
     private OffsetDateTime tps;
+    private String pack;
 
-    public SaleItemResponse(String saleItemId, String prodId, String name, BigDecimal unitPrice, SellingUnit unit,
-                            BigDecimal amount, BigDecimal sumPrice, String internal, OffsetDateTime tps) {
+    public SaleItemResponse(String saleItemId, String prodId, String name,
+                            BigDecimal unitPrice, SellingUnit unit, BigDecimal amount,
+                            BigDecimal sumPrice, String internal,
+                            OffsetDateTime tps, String pack) {
         this.saleItemId = saleItemId;
         this.prodId = prodId;
         this.name = name;
@@ -27,6 +30,7 @@ public class SaleItemResponse {
         this.sumPrice = sumPrice;
         this.internal = internal;
         this.tps = tps;
+        this.pack = pack;
     }
 
     public SaleItemResponse(){}
@@ -101,5 +105,13 @@ public class SaleItemResponse {
 
     public void setTps(OffsetDateTime tps) {
         this.tps = tps;
+    }
+
+    public String getPack() {
+        return pack;
+    }
+
+    public void setPack(String pack) {
+        this.pack = pack;
     }
 }
