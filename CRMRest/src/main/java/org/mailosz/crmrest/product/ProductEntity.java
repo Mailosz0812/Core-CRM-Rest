@@ -37,18 +37,20 @@ public class ProductEntity {
     private PriceListEntity priceList;
 
     @Enumerated(EnumType.STRING)
-    private Category category;
-
-    @Enumerated(EnumType.STRING)
     private SellingUnit unit;
 
     @Column(nullable = false)
     private OffsetDateTime tps;
 
+    @Column(nullable = false)
+    private String producer;
+
+    private String pack;
+
 
     public ProductEntity(UUID id, BigDecimal unitPrice, String productName, String internalName,
                          ProductState productState, Boolean visibility,
-                         PriceListEntity priceList, Category category, SellingUnit unit, OffsetDateTime tps) {
+                         PriceListEntity priceList, SellingUnit unit, OffsetDateTime tps, String producer, String pack) {
         this.id = id;
         this.unitPrice = unitPrice;
         this.productName = productName;
@@ -56,9 +58,10 @@ public class ProductEntity {
         this.productState = productState;
         this.visibility = visibility;
         this.priceList = priceList;
-        this.category = category;
         this.unit = unit;
         this.tps = tps;
+        this.producer = producer;
+        this.pack = pack;
     }
 
     public ProductEntity() {
@@ -112,14 +115,6 @@ public class ProductEntity {
         this.priceList = priceList;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
     public SellingUnit getUnit() {
         return unit;
     }
@@ -142,5 +137,21 @@ public class ProductEntity {
 
     public void setTps(OffsetDateTime tps) {
         this.tps = tps;
+    }
+
+    public String getProducer() {
+        return producer;
+    }
+
+    public void setProducer(String producer) {
+        this.producer = producer;
+    }
+
+    public String getPack() {
+        return pack;
+    }
+
+    public void setPack(String pack) {
+        this.pack = pack;
     }
 }

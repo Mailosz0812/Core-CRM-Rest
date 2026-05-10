@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.mailosz.crmrest.helpers.validator.TpsDate;
 import org.mailosz.crmrest.prices.SellingUnit;
-import org.mailosz.crmrest.product.Category;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -26,20 +25,23 @@ public class ListProduct {
     private SellingUnit unit;
 
     @NotNull
-    private Category prodCategory;
-
-    @NotNull
     @TpsDate
     private OffsetDateTime tps;
 
+    @NotBlank
+    private String producer;
+
+    private String pack;
+
     public ListProduct(String name, String internalName, BigDecimal unitPrice,
-                       SellingUnit unit, Category prodCategory, OffsetDateTime tps) {
+                       SellingUnit unit, OffsetDateTime tps, String producer, String pack) {
         this.name = name;
         this.internalName = internalName;
         this.unitPrice = unitPrice;
         this.unit = unit;
-        this.prodCategory = prodCategory;
         this.tps = tps;
+        this.producer = producer;
+        this.pack = pack;
     }
 
     public ListProduct() {
@@ -49,7 +51,11 @@ public class ListProduct {
         return name;
     }
 
-    public @NotNull @DecimalMin(value = "0.00", message = "Price should be greater than zero") BigDecimal getUnitPrice() {
+    public @NotBlank String getInternalName() {
+        return internalName;
+    }
+
+    public @NotNull @DecimalMin(value = "0.00", message = "Price should be greater than or equal zero") BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
@@ -57,15 +63,15 @@ public class ListProduct {
         return unit;
     }
 
-    public @NotNull Category getProdCategory() {
-        return prodCategory;
-    }
-
-    public @NotBlank String getInternalName() {
-        return internalName;
-    }
-
     public @NotNull OffsetDateTime getTps() {
         return tps;
+    }
+
+    public @NotBlank String getProducer() {
+        return producer;
+    }
+
+    public String getPack() {
+        return pack;
     }
 }

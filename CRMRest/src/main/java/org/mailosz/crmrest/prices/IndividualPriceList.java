@@ -12,7 +12,7 @@ import java.util.UUID;
 @DiscriminatorValue("INDIVIDUAL")
 public class IndividualPriceList extends PriceListEntity{
     @ManyToOne
-    @JoinColumn(name = "client_id", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
     private CrmClientEntity client;
 
     @Column(nullable = false)

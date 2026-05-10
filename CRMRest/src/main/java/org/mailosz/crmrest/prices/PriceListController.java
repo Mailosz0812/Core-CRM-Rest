@@ -1,7 +1,7 @@
 package org.mailosz.crmrest.prices;
 
 import jakarta.validation.Valid;
-import org.mailosz.crmrest.prices.request.BasePriceListCreationReq;
+import org.mailosz.crmrest.prices.request.BasePriceListOperationReq;
 import org.mailosz.crmrest.prices.request.PriceListCreationReq;
 import org.mailosz.crmrest.prices.request.PriceListUpdateReq;
 import org.mailosz.crmrest.prices.response.BasePriceListResponse;
@@ -38,7 +38,7 @@ public class PriceListController {
     }
 
     @PatchMapping("/base")
-    public BasePriceListResponse updateBasePriceList(@RequestBody @Valid BasePriceListCreationReq req){
+    public BasePriceListResponse updateBasePriceList(@RequestBody @Valid BasePriceListOperationReq req){
         return this.priceService.patchBasePriceList(req);
     }
 

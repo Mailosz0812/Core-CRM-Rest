@@ -5,6 +5,7 @@ import org.mailosz.crmrest.crmclient.CrmClientEntity;
 import org.mailosz.crmrest.exception.types.CrmClientNotFoundException;
 import org.mailosz.crmrest.exception.types.PriceListNotFoundException;
 import org.mailosz.crmrest.exception.types.ProductNotFoundException;
+import org.mailosz.crmrest.exception.types.UnprocessableContent;
 import org.mailosz.crmrest.prices.request.*;
 import org.mailosz.crmrest.prices.response.BasePriceListResponse;
 import org.mailosz.crmrest.prices.response.PriceListResponse;
@@ -57,37 +58,23 @@ public class PriceListService {
         );
     }
     @Transactional
-    public BasePriceListResponse patchBasePriceList(BasePriceListCreationReq req){
+    public BasePriceListResponse patchBasePriceList(BasePriceListOperationReq req){
         BasePriceList priceList = this.baseRepository.findFirstBy().orElseGet(() -> {
             BasePriceList saved = this.baseRepository.save(new BasePriceList());
             saved.setProducts(new ArrayList<>());
             return saved;
         });
-        List<ProductUpdateReq> productsList = req.getProductList();
+
+        Map<Boolean, List<ProductOperation>> operations = this.divideOperations(req.getProductList());
+
+        List<ProductUpdateReq> updateReqs = this.getReqs(false,operations);
+        List<ProductUpdateReq> deleteReqs = this.getReqs(true,operations);
 
         Map<UUID,ProductEntity> existingEntities = priceList.getProducts().stream()
                 .collect(Collectors.toMap(ProductEntity::getId,p -> p));
 
-        for (ProductUpdateReq prodReq : productsList) {
-            UUID currId = prodReq.getId();
-            ProductEntity prod = new ProductEntity();
-            if(currId != null){
-                prod = existingEntities.get(currId);
-                if(prod == null){
-                    throw new ProductNotFoundException(currId.toString(),"PROD_NOT_FOUND");
-                }
-            }else{
-                prod.setPriceList(priceList);
-                prod.setVisibility(true);
-                priceList.getProducts().add(prod);
-            }
-            prod.setProductName(prodReq.getName());
-            prod.setUnitPrice(prodReq.getUnitPrice());
-            prod.setInternalName(prodReq.getInternal());
-            prod.setCategory(prodReq.getCategory());
-            prod.setUnit(prodReq.getUnit());
-            prod.setTps(prodReq.getTps());
-        }
+        this.processUpdates(updateReqs,existingEntities,priceList);
+        this.processDeletions(deleteReqs,existingEntities,priceList);
         BasePriceList savedList = this.priceRepository.save(priceList);
         return new BasePriceListResponse(this.mapProductResponse(savedList.getProducts()));
     }
@@ -96,6 +83,7 @@ public class PriceListService {
         BasePriceList priceList = this.baseRepository.findFirstBy().orElseThrow(() -> new PriceListNotFoundException("BASE","PRICE_LIST_NOT_FOUND"));
         return new BasePriceListResponse(this.mapProductResponse(priceList.getProducts()));
     }
+
     public PriceListResponse getPriceListById(UUID id){
         PriceListEntity priceList = this.priceRepository.findPriceListEntityById(id)
                 .orElseThrow(() -> new PriceListNotFoundException(id.toString(),"PRICE_LIST_NOT_FOUND"));
@@ -154,6 +142,52 @@ public class PriceListService {
         );
     }
 
+    private void processUpdates(List<ProductUpdateReq> updateReqs,Map<UUID,ProductEntity> existingEntities, PriceListEntity priceList){
+        for (ProductUpdateReq prodReq : updateReqs) {
+            UUID currId = prodReq.getId();
+            ProductEntity prod = new ProductEntity();
+            if(currId != null){
+                prod = existingEntities.get(currId);
+                if(prod == null){
+                    throw new ProductNotFoundException(currId.toString(),"PROD_NOT_FOUND");
+                }
+            }else{
+                prod.setPriceList(priceList);
+                prod.setVisibility(true);
+                priceList.getProducts().add(prod);
+            }
+            prod.setProductName(prodReq.getName());
+            prod.setUnitPrice(prodReq.getUnitPrice());
+            prod.setInternalName(prodReq.getInternal());
+            prod.setPack(prodReq.getPack());
+            prod.setProducer(prodReq.getProducer());
+            prod.setUnit(prodReq.getUnit());
+            prod.setTps(prodReq.getTps());
+        }
+    }
+    private void processDeletions(List<ProductUpdateReq> deletionReqs,Map<UUID,ProductEntity> existingEntities, PriceListEntity priceList){
+        for (ProductUpdateReq deletionReq : deletionReqs) {
+            UUID id = deletionReq.getId();
+            if(id == null){
+                throw new UnprocessableContent("Product id is null","PROD_ID_NULL");
+            }
+            ProductEntity prod = existingEntities.get(id);
+            if(prod == null){
+                throw new ProductNotFoundException(id.toString(),"PROD_NOT_FOUND");
+            }
+            priceList.getProducts().remove(prod);
+        }
+    }
+    private Map<Boolean,List<ProductOperation>> divideOperations(List<ProductOperation> operations){
+        return operations.stream()
+                .collect(Collectors.partitioningBy(ProductOperation::getDelete));
+    }
+
+    private List<ProductUpdateReq> getReqs(Boolean isDelete, Map<Boolean,List<ProductOperation>> operations){
+        return operations.get(isDelete).stream()
+                .map(ProductOperation::getProdReq)
+                .toList();
+    }
     private List<ProductUpdateReq> filterNullableProducts(List<ProductUpdateReq> products){
         return products.stream()
                 .filter(product -> product.getId() == null)
@@ -176,10 +210,11 @@ public class PriceListService {
             prod.setInternalName(product.getInternal());
             prod.setUnitPrice(product.getUnitPrice());
             prod.setVisibility(true);
-            prod.setCategory(product.getCategory());
             prod.setUnit(product.getUnit());
             prod.setPriceList(priceList);
             prod.setTps(product.getTps());
+            prod.setPack(product.getPack());
+            prod.setProducer(product.getProducer());
             return prod;
         }).toList();
     }
@@ -191,10 +226,11 @@ public class PriceListService {
             prod.setInternalName(product.getInternalName());
             prod.setUnitPrice(product.getUnitPrice());
             prod.setVisibility(true);
-            prod.setCategory(product.getProdCategory());
             prod.setUnit(product.getUnit());
             prod.setPriceList(priceList);
             prod.setTps(product.getTps());
+            prod.setPack(product.getPack());
+            prod.setProducer(product.getProducer());
             return prod;
         }).toList();
     }
@@ -205,9 +241,10 @@ public class PriceListService {
                 prod.getProductName(),
                 prod.getUnitPrice(),
                 prod.getUnit(),
-                prod.getCategory().name(),
                 prod.getInternalName(),
-                prod.getTps())
+                prod.getTps(),
+                prod.getProducer(),
+                prod.getPack())
         ).toList();
     }
 

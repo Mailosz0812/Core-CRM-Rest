@@ -24,25 +24,26 @@ public class ProductUpdateReq {
     private BigDecimal unitPrice;
 
     @NotNull
-    private Category category;
-
-    @NotNull
     private SellingUnit unit;
 
     @NotNull
     @TpsDate
     private OffsetDateTime tps;
 
-    public ProductUpdateReq(UUID id, String name, String internal,
-                            BigDecimal unitPrice, Category category,
-                            SellingUnit unit, OffsetDateTime tps) {
+    @NotBlank
+    private String producer;
+
+    private String pack;
+
+    public ProductUpdateReq(UUID id, String name, String internal, BigDecimal unitPrice, SellingUnit unit, OffsetDateTime tps, String producer, String pack) {
         this.id = id;
         this.name = name;
         this.internal = internal;
         this.unitPrice = unitPrice;
-        this.category = category;
         this.unit = unit;
         this.tps = tps;
+        this.producer = producer;
+        this.pack = pack;
     }
 
     public ProductUpdateReq() {
@@ -64,8 +65,12 @@ public class ProductUpdateReq {
         return unitPrice;
     }
 
-    public @NotNull Category getCategory() {
-        return category;
+    public @NotNull String getProducer() {
+        return producer;
+    }
+
+    public String getPack() {
+        return pack;
     }
 
     public @NotNull SellingUnit getUnit() {
