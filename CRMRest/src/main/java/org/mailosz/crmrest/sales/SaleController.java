@@ -9,6 +9,7 @@ import org.mailosz.crmrest.sales.response.ShortSaleResp;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +23,11 @@ import java.util.UUID;
 @RequestMapping("/sales")
 public class SaleController {
     private final SaleService saleService;
+    private final SalePrintFacade printFacade;
 
-    public SaleController(SaleService saleService) {
+    public SaleController(SaleService saleService, SalePrintFacade printFacade) {
         this.saleService = saleService;
+        this.printFacade = printFacade;
     }
 
     @PostMapping
@@ -63,5 +66,13 @@ public class SaleController {
     @PutMapping
     public SaleCreationResp updateSale(@RequestBody @Valid SaleUpdateReq req){
         return this.saleService.updateSale(req);
+    }
+
+    @GetMapping("/{id}/print")
+    ResponseEntity<byte[]> getSalePrint(@PathVariable UUID id){
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,"inline; filename=\"zamowienie_" + id + ".pdf\"")
+                .body(this.printFacade.printSale(id));
     }
 }
