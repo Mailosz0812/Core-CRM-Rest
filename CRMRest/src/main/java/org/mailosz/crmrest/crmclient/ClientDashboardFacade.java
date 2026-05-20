@@ -2,6 +2,7 @@ package org.mailosz.crmrest.crmclient;
 
 import org.mailosz.crmrest.crmclient.response.ClientDashboardView;
 import org.mailosz.crmrest.crmclient.response.ClientWidgetResponse;
+import org.mailosz.crmrest.crmclient.response.ShortPriceListResp;
 import org.mailosz.crmrest.prices.PriceListService;
 import org.mailosz.crmrest.product.Product;
 import org.mailosz.crmrest.sales.SaleService;
@@ -27,7 +28,7 @@ public class ClientDashboardFacade {
     public ClientDashboardView getClientDashboardData(UUID id){
         ClientWidgetResponse clientInfo = clientService.getClientWidgetInfo(id);
         List<ShortSaleResp> sales = this.saleService.getSalesByClientId(id, Pageable.ofSize(5));
-        List<Product> latestPrices = this.priceService.getLatestProductsByClientId(id);
+        ShortPriceListResp latestPrices = this.priceService.getLatestProductsByClientId(id);
 
         return new ClientDashboardView(clientInfo,sales,latestPrices);
     }
