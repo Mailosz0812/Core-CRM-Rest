@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/product/category")
 public class CategoryController {
@@ -22,5 +24,9 @@ public class CategoryController {
     @GetMapping
     public CategoryCreationResp getCategoryByName(@RequestParam @NotBlank String name){
         return this.categoryService.getCategoryByName(name);
+    }
+    @GetMapping("/all")
+    public List<CategoryCreationResp> getAllCategories(){
+        return this.categoryService.getAllCategories();
     }
 }
