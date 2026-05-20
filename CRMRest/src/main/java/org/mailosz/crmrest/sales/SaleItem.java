@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.mailosz.crmrest.prices.SellingUnit;
 import org.mailosz.crmrest.product.ProductEntity;
 import org.mailosz.crmrest.product.ProductState;
+import org.mailosz.crmrest.product.category.CategoryEntity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,7 +23,7 @@ public class SaleItem {
     @JoinColumn(name = "sale_id",referencedColumnName = "id",nullable = false)
     private SaleEntity sale;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id",referencedColumnName = "id")
     private ProductEntity product;
 
@@ -48,10 +49,9 @@ public class SaleItem {
 
     private String pack;
 
-    public SaleItem(UUID id, SaleEntity sale, ProductEntity product,
-                    String name, String internalName,
-                    BigDecimal amount, BigDecimal unitPriceAtSale,
-                    BigDecimal sumPrice, SellingUnit unit, OffsetDateTime tps, String pack) {
+    public SaleItem(UUID id, SaleEntity sale, ProductEntity product, String name, String internalName,
+                    BigDecimal amount, BigDecimal unitPriceAtSale, BigDecimal sumPrice, SellingUnit unit,
+                    OffsetDateTime tps, String pack) {
         this.id = id;
         this.sale = sale;
         this.product = product;

@@ -14,10 +14,10 @@ public class Product {
     private OffsetDateTime tps;
     private String producer;
     private String pack;
+    private String category;
 
 
-    public Product(String id, String name, BigDecimal unitPrice, SellingUnit unit,
-                   String internal, OffsetDateTime tps, String producer, String pack) {
+    public Product(String id, String name, BigDecimal unitPrice, SellingUnit unit, String internal, OffsetDateTime tps, String producer, String pack, String category) {
         this.id = id;
         this.name = name;
         this.unitPrice = unitPrice;
@@ -26,6 +26,7 @@ public class Product {
         this.tps = tps;
         this.producer = producer;
         this.pack = pack;
+        this.category = category;
     }
 
     public Product() {
@@ -95,4 +96,13 @@ public class Product {
     public void setPack(String pack) {
         this.pack = pack;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
 }

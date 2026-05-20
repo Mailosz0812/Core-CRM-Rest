@@ -3,6 +3,7 @@ package org.mailosz.crmrest.product;
 import jakarta.persistence.*;
 import org.mailosz.crmrest.prices.PriceListEntity;
 import org.mailosz.crmrest.prices.SellingUnit;
+import org.mailosz.crmrest.product.category.CategoryEntity;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -47,10 +48,14 @@ public class ProductEntity {
 
     private String pack;
 
+    @ManyToOne
+    @JoinColumn(name="category_id",referencedColumnName = "id", nullable = false)
+    private CategoryEntity category;
 
-    public ProductEntity(UUID id, BigDecimal unitPrice, String productName, String internalName,
-                         ProductState productState, Boolean visibility,
-                         PriceListEntity priceList, SellingUnit unit, OffsetDateTime tps, String producer, String pack) {
+
+    public ProductEntity(UUID id, BigDecimal unitPrice, String productName, String internalName, ProductState productState,
+                         Boolean visibility, PriceListEntity priceList, SellingUnit unit, OffsetDateTime tps, String producer,
+                         String pack, CategoryEntity category) {
         this.id = id;
         this.unitPrice = unitPrice;
         this.productName = productName;
@@ -62,9 +67,23 @@ public class ProductEntity {
         this.tps = tps;
         this.producer = producer;
         this.pack = pack;
+        this.category = category;
     }
 
     public ProductEntity() {
+    }
+    public ProductEntity(ProductEntity prod){
+        this.unitPrice = prod.unitPrice;
+        this.productName = prod.productName;
+        this.internalName = prod.internalName;
+        this.productState = prod.productState;
+        this.visibility = true;
+        this.priceList = prod.priceList;
+        this.unit = prod.unit;
+        this.tps = prod.tps;
+        this.producer = prod.producer;
+        this.pack = prod.pack;
+        this.category = prod.category;
     }
 
     public UUID getId() {
@@ -153,5 +172,31 @@ public class ProductEntity {
 
     public void setPack(String pack) {
         this.pack = pack;
+    }
+
+    public CategoryEntity getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryEntity category) {
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductEntity{" +
+                "id=" + id +
+                ", unitPrice=" + unitPrice +
+                ", productName='" + productName + '\'' +
+                ", internalName='" + internalName + '\'' +
+                ", productState=" + productState +
+                ", visibility=" + visibility +
+                ", priceList=" + priceList +
+                ", unit=" + unit +
+                ", tps=" + tps +
+                ", producer='" + producer + '\'' +
+                ", pack='" + pack + '\'' +
+                ", category=" + category +
+                '}';
     }
 }

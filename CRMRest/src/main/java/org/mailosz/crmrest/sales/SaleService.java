@@ -5,6 +5,7 @@ import org.mailosz.crmrest.crmclient.CrmClientEntity;
 import org.mailosz.crmrest.crmuser.CrmUserEntity;
 import org.mailosz.crmrest.crmuser.UserRepository;
 import org.mailosz.crmrest.exception.types.*;
+import org.mailosz.crmrest.helpers.CategoryHelper;
 import org.mailosz.crmrest.product.ProductCacheRepository;
 import org.mailosz.crmrest.product.ProductEntity;
 import org.mailosz.crmrest.sales.request.*;
@@ -29,19 +30,21 @@ public class SaleService {
     private final UserRepository userRepository;
     private final SaleStageRepository stageRepository;
     private final ProductCacheRepository cacheRepository;
+    private final CategoryHelper categoryHelper;
 
-    public SaleService(SaleRepository saleRepository, SaleItemRepository saleItemRepository, ClientRepository clientRepository,
-                       UserRepository userRepository, SaleStageRepository stageRepository,
-                       ProductCacheRepository cacheRepository) {
-        this.saleRepository = saleRepository;
-        this.saleItemRepository = saleItemRepository;
-        this.clientRepository = clientRepository;
-        this.userRepository = userRepository;
-        this.stageRepository = stageRepository;
+    public SaleService(CategoryHelper categoryHelper, ProductCacheRepository cacheRepository, SaleStageRepository stageRepository,
+                       UserRepository userRepository, ClientRepository clientRepository, SaleItemRepository saleItemRepository,
+                       SaleRepository saleRepository) {
+        this.categoryHelper = categoryHelper;
         this.cacheRepository = cacheRepository;
+        this.stageRepository = stageRepository;
+        this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
+        this.saleItemRepository = saleItemRepository;
+        this.saleRepository = saleRepository;
     }
 
-    public List<ShortSaleResp> getAllSales(Pageable pageable,Stage reqStage, String term){
+    public List<ShortSaleResp> getAllSales(Pageable pageable, Stage reqStage, String term){
         SaleStage stage = null;
         if(reqStage != null){
             stage = this.stageRepository.findSaleStageByStage(reqStage)
@@ -222,7 +225,8 @@ public class SaleService {
                         item.getName(),
                         item.getUnit(),
                         item.getAmount(),
-                        item.getInternalName()
+                        item.getInternalName(),
+                        item.getProduct().getCategory().getName()
                 )).toList();
     }
 
@@ -246,7 +250,6 @@ public class SaleService {
            itemEntity.setUnitPriceAtSale(saleItem.getUnitPrice());
            itemEntity.setUnit(saleItem.getUnit());
            itemEntity.setTps(saleItem.getTps());
-
             return itemEntity;
         }).collect(Collectors.toList());
     }
@@ -280,7 +283,8 @@ public class SaleService {
                         item.getSumPrice(),
                         item.getInternalName(),
                         item.getTps(),
-                        item.getPack()))
+                        item.getPack(),
+                        item.getProduct() != null ? item.getProduct().getCategory().getName(): "Custom"))
                 .toList();
         return new SaleCreationResp(
                 saleEntity.getId().toString(),
