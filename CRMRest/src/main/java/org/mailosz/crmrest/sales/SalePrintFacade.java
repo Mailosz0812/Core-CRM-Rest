@@ -5,6 +5,7 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import org.mailosz.crmrest.crmclient.ClientService;
 import org.mailosz.crmrest.crmclient.response.ClientResponse;
 import org.mailosz.crmrest.exception.types.PDFGenerationException;
+import org.mailosz.crmrest.helpers.ByteGenerator;
 import org.mailosz.crmrest.sales.response.SaleCreationResp;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -20,11 +21,14 @@ public class SalePrintFacade {
     private final SaleService saleService;
     private final ClientService clientService;
     private final SpringTemplateEngine templateEngine;
+    private final ByteGenerator byteHelper;
 
-    public SalePrintFacade(SaleService saleService, ClientService clientService, SpringTemplateEngine templateEngine) {
+    public SalePrintFacade(SaleService saleService, ClientService clientService,
+                           SpringTemplateEngine templateEngine, ByteGenerator byteHelper) {
         this.saleService = saleService;
         this.clientService = clientService;
         this.templateEngine = templateEngine;
+        this.byteHelper = byteHelper;
     }
 
     public byte[] printSale(UUID saleId){
@@ -43,26 +47,6 @@ public class SalePrintFacade {
         context.setVariable("saleItems",sale.getSaleItems());
 
         String generatedHtml = templateEngine.process("sale-print",context);
-
-        try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-
-            builder.useFont(
-                    () -> {
-                        try {
-                            return new ClassPathResource("fonts/Roboto-Regular.ttf").getInputStream();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    },
-                    "Roboto"
-            );
-            builder.withHtmlContent(generatedHtml,null);
-            builder.toStream(outputStream);
-            builder.run();
-            return outputStream.toByteArray();
-        }catch (Exception e){
-            throw new PDFGenerationException("Error occurred during pdf generation");
-        }
+        return this.byteHelper.getBytes(generatedHtml);
     }
 }

@@ -7,7 +7,7 @@
         /* Konfiguracja strony PDF (format A4, marginesy) */
         @page {
             size: A4;
-            margin: 15mm 20mm;
+            margin: 5mm 15mm;
         }
 
         /* Podstawowy reset i typografia */
@@ -31,8 +31,6 @@
             color: #4b5563;
             margin-bottom: 25px;
         }
-
-        /* 2. NOTATKA (w ramce) */
         .note-box {
             border: 2px solid #e5e7eb;
             background-color: #f9fafb;
@@ -52,7 +50,7 @@
         /* 3. TABELKA */
         table {
             width: 100%;
-            border-collapse: collapse; /* Ważne w PDF: łączy krawędzie komórek */
+            border-collapse: collapse;
             margin-top: 10px;
         }
 
@@ -106,8 +104,10 @@
     <thead>
     <tr>
         <th style="width: 5%;">Lp.</th>
-        <th style="width: 70%;">Produkt</th>
-        <th style="width: 25%; text-align: center;">Ilość</th>
+        <th style="width: 35%;">Produkt</th>
+        <th style="width: 20%; text-align: center;">TPS</th>
+        <th style="width: 20%; text-align: center;">Kategoria</th>
+        <th style="width: 20%; text-align: center;">Ilość</th>
     </tr>
     </thead>
     <tbody>
@@ -117,7 +117,13 @@
             <div class="product-internal" th:text="${item.internal}"></div>
             <div class="product-name" th:text="${item.name}"></div>
         </td>
-        <td style="text-align: center; font-weight: bold; font-size: 14pt;">
+        <td style="text-align: center; font-weight: bold; font-size: 12pt;">
+            <div  th:text="${#temporals.format(item.tps, 'dd.MM.yyyy')}"></div>
+        </td>
+        <td style="text-align: center; font-weight: bold; font-size: 12pt;">
+            <div  th:text="${item.category}"></div>
+        </td>
+        <td style="text-align: center; font-weight: bold; font-size: 12pt;">
             <span th:text="${item.amount}"></span>
             <span style="font-size: 10pt; font-weight: normal;" th:text="${item.unit}"></span>
         </td>

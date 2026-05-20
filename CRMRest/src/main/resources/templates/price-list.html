@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Wydruk Cennika</title>
+    <style>
+        /* Optymalizacja pod format A4 */
+        @page {
+            size: A4;
+            margin: 8mm 12mm;
+        }
+
+        body {
+            font-family: "DejaVu Sans", sans-serif;
+            color: #000;
+            line-height: 1.1;
+            font-size: 8.5pt; /* Rozmiar dopasowany do dużej ilości danych */
+        }
+
+        .header-top {
+            width: 100%;
+            border-bottom: 2px solid #000;
+            margin-bottom: 10px;
+            padding-bottom: 2px;
+        }
+
+        .date-box {
+            float: right;
+            font-weight: bold;
+            font-size: 10pt;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 2px 5px;
+            overflow: hidden;
+        }
+
+        /* Nagłówki główne */
+        th {
+            background-color: #f3f4f6;
+            text-transform: uppercase;
+            font-size: 7.5pt;
+            font-weight: bold;
+        }
+
+        /* Wiersz kategorii - ciemniejszy szary pasek */
+        .category-row {
+            background-color: #d1d5db; /* Szary jak na wzorze */
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 9pt;
+        }
+
+        /* Szerokości kolumn zgodne z proporcjami na zdjęciu */
+        .col-lp { width: 25px; text-align: center; }
+        .col-name { width: auto; }
+        .col-unit { width: 30px; text-align: center; }
+        .col-pack { width: 55px; text-align: center; }
+        .col-price { width: 60px; text-align: right; font-weight: bold; }
+        .col-tps { width: 70px; text-align: center; }
+
+        .producer-tag {
+            font-size: 7pt;
+            color: #4b5563;
+            font-weight: normal;
+            margin-left: 4px;
+        }
+
+        .clear { clear: both; }
+    </style>
+</head>
+<body>
+
+<div class="header-top">
+    <div class="date-box" th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy')}">08.04.2026</div>
+    <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase;">NAZWA</div>
+    <div class="clear"></div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th class="col-lp"></th>
+        <th style="text-align: left;">NAZWA</th>
+        <th class="col-unit">jm.</th>
+        <th class="col-pack">OPAK.</th>
+        <th class="col-price">CENA</th>
+        <th class="col-tps">TPS</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="prod, iterStat : ${products}">
+
+        <tr th:if="${iterStat.first or prod.category != products[iterStat.index - 1].category}" class="category-row">
+            <td colspan="6" th:text="${prod.category}">KATEGORIA PRODUKTÓW</td>
+        </tr>
+
+        <tr>
+            <td class="col-lp" th:text="${iterStat.count}">1</td>
+            <td>
+                <span style="font-weight: 500;" th:text="${prod.name}">NAZWA PRODUKTU</span>
+                <span class="producer-tag" th:if="${prod.producer != null}" th:text="'(' + ${prod.producer} + ')'"></span>
+            </td>
+            <td class="col-unit" th:text="${prod.unit != null ? prod.unit.toString().toLowerCase() : ''}">szt</td>
+            <td class="col-pack" th:text="${prod.pack}">150g</td>
+            <td class="col-price" th:text="${#numbers.formatDecimal(prod.unitPrice, 1, 2, 'COMMA')} + ' zl'">4,29 zł</td>
+            <td class="col-tps" th:text="${prod.tps != null ? #temporals.format(prod.tps, 'd.MM.yy') : 'X'}">9.04.26</td>
+        </tr>
+    </th:block>
+    </tbody>
+</table>
+
+<div style="margin-top: 20px; font-size: 8pt; border-top: 1px solid #eee; padding-top: 5px;">
+    <p>Notatki:</p>
+    <div style="border-bottom: 1px dashed #ccc; height: 20px;"></div>
+    <div style="border-bottom: 1px dashed #ccc; height: 20px;"></div>
+</div>
+
+</body>
+</html>

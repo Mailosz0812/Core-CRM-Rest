@@ -10,13 +10,15 @@ public class SaleItemWarehouseView {
     private SellingUnit unit;
     private BigDecimal amount;
     private String internal;
+    private String category;
 
-    public SaleItemWarehouseView(String saleItemId, String name, SellingUnit unit, BigDecimal amount, String internal) {
+    public SaleItemWarehouseView(String saleItemId, String name, SellingUnit unit, BigDecimal amount, String internal, String category) {
         this.saleItemId = saleItemId;
         this.name = name;
         this.unit = unit;
         this.amount = amount;
         this.internal = internal;
+        this.category = category;
     }
 
     public String getSaleItemId() {
@@ -37,5 +39,9 @@ public class SaleItemWarehouseView {
 
     public String getInternal() {
         return internal;
+    }
+
+    public String getCategory() {
+        return category;
     }
 }
