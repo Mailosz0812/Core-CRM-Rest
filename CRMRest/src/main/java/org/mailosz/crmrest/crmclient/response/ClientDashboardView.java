@@ -8,10 +8,10 @@ import java.util.List;
 public class ClientDashboardView {
     private ClientWidgetResponse clientInfo;
     private List<ShortSaleResp> recentSales;
-    private List<Product> recentPrices;
+    private ShortPriceListResp recentPrices;
 
 
-    public ClientDashboardView(ClientWidgetResponse clientInfo, List<ShortSaleResp> recentSales, List<Product> recentPrices) {
+    public ClientDashboardView(ClientWidgetResponse clientInfo, List<ShortSaleResp> recentSales, ShortPriceListResp recentPrices) {
         this.clientInfo = clientInfo;
         this.recentSales = recentSales;
         this.recentPrices = recentPrices;
@@ -27,7 +27,7 @@ public class ClientDashboardView {
         return recentSales;
     }
 
-    public List<Product> getRecentPrices() {
+    public ShortPriceListResp getRecentPrices() {
         return recentPrices;
     }
 }
