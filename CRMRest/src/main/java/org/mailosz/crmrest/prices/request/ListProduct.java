@@ -8,6 +8,7 @@ import org.mailosz.crmrest.prices.SellingUnit;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 public class ListProduct {
 
@@ -33,8 +34,10 @@ public class ListProduct {
 
     private String pack;
 
-    public ListProduct(String name, String internalName, BigDecimal unitPrice,
-                       SellingUnit unit, OffsetDateTime tps, String producer, String pack) {
+    @NotNull
+    private UUID categoryId;
+
+    public ListProduct(String name, String internalName, BigDecimal unitPrice, SellingUnit unit, OffsetDateTime tps, String producer, String pack, UUID categoryId) {
         this.name = name;
         this.internalName = internalName;
         this.unitPrice = unitPrice;
@@ -42,6 +45,7 @@ public class ListProduct {
         this.tps = tps;
         this.producer = producer;
         this.pack = pack;
+        this.categoryId = categoryId;
     }
 
     public ListProduct() {
@@ -73,5 +77,9 @@ public class ListProduct {
 
     public String getPack() {
         return pack;
+    }
+
+    public @NotNull UUID getCategoryId() {
+        return categoryId;
     }
 }

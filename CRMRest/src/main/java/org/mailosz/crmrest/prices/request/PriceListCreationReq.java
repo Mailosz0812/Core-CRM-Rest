@@ -2,7 +2,6 @@ package org.mailosz.crmrest.prices.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -14,14 +13,17 @@ public class PriceListCreationReq {
     @NotBlank
     private String clientId;
 
-    @NotEmpty
     @Valid
     private List<ListProduct> items;
 
-    public PriceListCreationReq(String listTitle, String clientId, List<ListProduct> items) {
+    @Valid
+    private List<BaseItem> baseItems;
+
+    public PriceListCreationReq(String listTitle, String clientId, List<ListProduct> customItems, List<BaseItem> baseItems) {
         this.listTitle = listTitle;
         this.clientId = clientId;
-        this.items = items;
+        this.items = customItems;
+        this.baseItems = baseItems;
     }
 
     public @NotBlank String getListTitle() {
@@ -32,8 +34,11 @@ public class PriceListCreationReq {
         return clientId;
     }
 
-    public @NotEmpty @Valid List<ListProduct> getItems() {
+    public @Valid List<ListProduct> getItems() {
         return items;
     }
 
+    public @Valid List<BaseItem> getBaseItems() {
+        return baseItems;
+    }
 }
