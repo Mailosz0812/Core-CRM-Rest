@@ -10,16 +10,14 @@ import org.mailosz.crmrest.crmuser.roles.RoleEntity;
 import org.mailosz.crmrest.exception.types.*;
 import org.mailosz.crmrest.prices.PriceListEntity;
 import org.mailosz.crmrest.prices.SellingUnit;
-import org.mailosz.crmrest.product.Category;
 import org.mailosz.crmrest.product.ProductCacheRepository;
 import org.mailosz.crmrest.product.ProductEntity;
-import org.mailosz.crmrest.product.ProductState;
+import org.mailosz.crmrest.product.category.CategoryEntity;
 import org.mailosz.crmrest.sales.request.CustomSaleItem;
 import org.mailosz.crmrest.sales.request.SaleCreateReq;
 import org.mailosz.crmrest.sales.request.SaleItemReq;
 import org.mailosz.crmrest.sales.response.SaleCreationResp;
 import org.mailosz.crmrest.sales.response.SaleItemResponse;
-import org.mailosz.crmrest.sales.response.SaleResponse;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -28,7 +26,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,6 +60,7 @@ class SaleServiceTest {
     @InjectMocks
     private SaleService saleService;
 
+
     @Nested
     @DisplayName("Sale creation unit tests")
     class createSaleTests{
@@ -70,11 +71,15 @@ class SaleServiceTest {
         SaleStage stageEntity;
         SaleEntity saleEntityRes;
         ProductEntity productEntity;
-        ProductEntity productEntity1;
+        ProductEntity productEntity2;
         List<ProductEntity> productsList;
         List<SaleItem> saleItemsRes;
         SaleCreationResp expectedSaleResponse;
         PriceListEntity priceList;
+        OffsetDateTime tps;
+        CategoryEntity categoryEntity;
+        CategoryEntity categoryEntity2;
+
 
         UUID prodId = UUID.randomUUID();
         UUID prodId2 = UUID.randomUUID();
@@ -85,12 +90,62 @@ class SaleServiceTest {
         UUID itemId2 = UUID.randomUUID();
         UUID saleId = UUID.randomUUID();
         UUID priceListId = UUID.randomUUID();
+        UUID categoryId = UUID.randomUUID();
+        UUID categoryId2 = UUID.randomUUID();
 
         @BeforeEach
         void setUp() {
+            categoryEntity = new CategoryEntity(categoryId,"Test category");
+            categoryEntity2 = new CategoryEntity(categoryId2,"Test category");
+            tps = OffsetDateTime.of(LocalDateTime.now().plusDays(1), ZoneOffset.UTC);
+            priceList = new PriceListEntity(
+                    priceListId,
+                    OffsetDateTime.now(),
+                    productsList
+            );
+
+            productEntity = new ProductEntity(
+                    prodId,
+                    BigDecimal.ONE,
+                    "test name",
+                    "internal test",
+                    null,
+                    true,
+                    priceList,
+                    SellingUnit.KARTON,
+                    tps,
+                    "Test producer",
+                    "Test pack",
+                    categoryEntity);
+            productEntity2 = new ProductEntity(
+                    prodId2,
+                    BigDecimal.TEN,
+                    "test name",
+                    "internal test",
+                    null,
+                    true,
+                    priceList,
+                    SellingUnit.KARTON,
+                    tps,
+                    "Test producer",
+                    "Test pack",
+                    categoryEntity2);
+
+            productsList = new ArrayList<>(List.of(productEntity, productEntity2));
+
             List<SaleItemReq> saleItems = new ArrayList<>(List.of(
-                    new SaleItemReq(prodId,BigDecimal.ONE),
-                    new SaleItemReq(prodId2,BigDecimal.ONE)
+                    new SaleItemReq(
+                            prodId,
+                            BigDecimal.ONE,
+                            BigDecimal.ONE,
+                            SellingUnit.KG,
+                            tps),
+                    new SaleItemReq(
+                            prodId2,
+                            BigDecimal.ONE,
+                            BigDecimal.TEN,
+                            SellingUnit.KG,
+                            tps)
             ));
             List<CustomSaleItem> customItems = Collections.emptyList();
 
@@ -101,7 +156,7 @@ class SaleServiceTest {
                     "dummy data",
                     "dummy data",
                     "dummy name"
-                    );
+            );
 
             clientEntity = new CrmClientEntity(
                     clientId, "test",
@@ -114,35 +169,35 @@ class SaleServiceTest {
                     "testPass", role, "test-name", "test-surname");
 
             stageEntity = new SaleStage(stageId, Stage.NOWA);
-            priceList = new PriceListEntity(
-                    priceListId,
-                    OffsetDateTime.now(),
-                    productsList
-            );
-            productEntity = new ProductEntity(
-                    prodId,
-                    BigDecimal.TEN,
-                    "test name","internal test",
-                    null,true,
-                    priceList,
-                    Category.INNE,
-                    SellingUnit.KARTON);
-            productEntity1 = new ProductEntity(
-                    prodId2,
-                    BigDecimal.TEN,
-                    "test name","internal test",
-                    null,true,
-                    priceList,
-                    Category.INNE,
-                    SellingUnit.KARTON);
-            productsList = new ArrayList<>(List.of(productEntity, productEntity1));
+
             saleItemsRes = new ArrayList<>(List.of(
-                    new SaleItem(itemId, saleEntityRes, productEntity,
-                            productEntity.getProductName(),productEntity.getInternalName(),
-                            productEntity.getUnitPrice(), BigDecimal.ONE,BigDecimal.TEN,productEntity.getUnit()),
-                    new SaleItem(itemId2, saleEntityRes, productEntity1,
-                            productEntity1.getProductName(),productEntity1.getInternalName(),
-                            productEntity1.getUnitPrice(), BigDecimal.ONE,BigDecimal.TEN,productEntity1.getUnit())
+                    new SaleItem(
+                            itemId,
+                            saleEntityRes,
+                            productEntity,
+                            "test name",
+                            "internal test",
+                            BigDecimal.ONE,
+                            BigDecimal.ONE,
+                            BigDecimal.ONE,
+                            SellingUnit.KG,
+                            tps,
+                            "Test pack"
+
+                    ),
+                    new SaleItem(
+                            itemId2,
+                            saleEntityRes,
+                            productEntity2,
+                            "test name",
+                            "internal test",
+                            BigDecimal.ONE,
+                            BigDecimal.TEN,
+                            BigDecimal.TEN,
+                            SellingUnit.KG,
+                            tps,
+                            "Test pack"
+                    )
             ));
 
             saleEntityRes = new SaleEntity(
@@ -170,18 +225,24 @@ class SaleServiceTest {
                             productEntity.getUnitPrice(),
                             productEntity.getUnit(),
                             BigDecimal.ONE,
-                            BigDecimal.TEN,
-                            productEntity.getInternalName()
+                            BigDecimal.ONE,
+                            productEntity.getInternalName(),
+                            tps,
+                            productEntity.getPack(),
+                            productEntity.getCategory().getName()
                     ),
                     new SaleItemResponse(
                             itemId.toString(),
                             prodId.toString(),
-                            productEntity1.getProductName(),
-                            productEntity1.getUnitPrice(),
-                            productEntity1.getUnit(),
-                            BigDecimal.ONE,
+                            productEntity2.getProductName(),
+                            productEntity2.getUnitPrice(),
+                            productEntity2.getUnit(),
                             BigDecimal.TEN,
-                            productEntity1.getInternalName()
+                            BigDecimal.TEN,
+                            productEntity2.getInternalName(),
+                            tps,
+                            productEntity.getPack(),
+                            productEntity.getCategory().getName()
                     )
             );
 
@@ -196,7 +257,7 @@ class SaleServiceTest {
                     saleEntityRes.getClient().getId().toString(),
                     saleEntityRes.getClient().getName(),
                     saleEntityRes.getCreatedAt()
-                    );
+            );
         }
         @Test
         void shouldCreateSaleSuccessfully(){
@@ -227,7 +288,7 @@ class SaleServiceTest {
             List<SaleItem> savedItems = saleItemArgumentCaptor.getValue();
 
 //            SaleEntity asserts
-            assertEquals(new BigDecimal("20.00"),savedEntity.getSumPrice());
+            assertEquals(new BigDecimal("11.00"),savedEntity.getSumPrice());
             assertEquals(clientId,savedEntity.getClient().getId());
             assertEquals(userId,savedEntity.getUser().getId());
             assertEquals(Stage.NOWA,savedEntity.getStage());
@@ -236,7 +297,7 @@ class SaleServiceTest {
             assertEquals(2,savedItems.size());
             SaleItem saleItem = savedItems.get(0);
             assertEquals(productEntity.getUnitPrice(), saleItem.getUnitPriceAtSale());
-            assertEquals(new BigDecimal("10.00"),saleItem.getSumPrice());
+            assertEquals(new BigDecimal("1.00"),saleItem.getSumPrice());
 
 //            Response asserts
             assertEquals(saleId.toString(), resp.getSaleId());
@@ -307,8 +368,16 @@ class SaleServiceTest {
 //            Given
             UUID id = UUID.randomUUID();
             List<SaleItemReq> notFoundItems = new ArrayList<>(List.of(
-                    new SaleItemReq(id,BigDecimal.ONE),
-                    new SaleItemReq(prodId2,BigDecimal.ONE)
+                    new SaleItemReq(id,
+                            BigDecimal.ONE,
+                            BigDecimal.ONE,
+                            SellingUnit.KG,
+                            tps),
+                    new SaleItemReq(prodId2,
+                            BigDecimal.ONE,
+                            BigDecimal.ONE,
+                            SellingUnit.KG,
+                            tps)
             ));
             createReq2 = new SaleCreateReq(
                     clientId,
@@ -340,6 +409,5 @@ class SaleServiceTest {
         }
 
     }
-
 
 }

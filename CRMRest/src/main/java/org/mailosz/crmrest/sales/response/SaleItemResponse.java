@@ -18,7 +18,10 @@ public class SaleItemResponse {
     private String pack;
     private String category;
 
-    public SaleItemResponse(String saleItemId, String prodId, String name, BigDecimal unitPrice, SellingUnit unit, BigDecimal amount, BigDecimal sumPrice, String internal, OffsetDateTime tps, String pack, String category) {
+    public SaleItemResponse(String saleItemId, String prodId, String name,
+                            BigDecimal unitPrice, SellingUnit unit, BigDecimal amount,
+                            BigDecimal sumPrice, String internal, OffsetDateTime tps,
+                            String pack, String category) {
         this.saleItemId = saleItemId;
         this.prodId = prodId;
         this.name = name;
