@@ -30,12 +30,10 @@ public class SaleService {
     private final UserRepository userRepository;
     private final SaleStageRepository stageRepository;
     private final ProductCacheRepository cacheRepository;
-    private final CategoryHelper categoryHelper;
 
-    public SaleService(CategoryHelper categoryHelper, ProductCacheRepository cacheRepository, SaleStageRepository stageRepository,
+    public SaleService(ProductCacheRepository cacheRepository, SaleStageRepository stageRepository,
                        UserRepository userRepository, ClientRepository clientRepository, SaleItemRepository saleItemRepository,
                        SaleRepository saleRepository) {
-        this.categoryHelper = categoryHelper;
         this.cacheRepository = cacheRepository;
         this.stageRepository = stageRepository;
         this.userRepository = userRepository;
