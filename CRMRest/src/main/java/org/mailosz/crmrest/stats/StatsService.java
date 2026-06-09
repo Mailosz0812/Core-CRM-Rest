@@ -67,11 +67,23 @@ public class StatsService {
         return new StatsResponse(incomeTemplate,orderVolume);
     }
 
+    public SalesmanStats findSalesmanStats(UUID id){
+        CrmUserEntity user = this.userRepository.findCrmUserEntityById(id)
+                .orElseThrow(() -> new CrmUserNotFoundException(id.toString()));
+        if(!Role.SALESMAN.toString().equals(user.getRole())){
+            throw new InsufficientPrivilegesException("Invalid role");
+        }
+        return this.fetchStats(user);
+    }
     public SalesmanStats findSalesmanStats(String username){
         CrmUserEntity user = this.userRepository.findCrmUserEntityByMail(username).orElseThrow(() -> new CrmUserNotFoundException(username));
         if(!Role.SALESMAN.toString().equals(user.getRole())){
-            throw new InsufficientPrivilegesException("Invalid privileges");
+            throw new InsufficientPrivilegesException("Invalid role");
         }
+        return this.fetchStats(user);
+    }
+
+    private SalesmanStats fetchStats(CrmUserEntity user){
         StatsHeaderValueProjection headerValues = this.statsRepo.findHeaderValues(0,user.getId());
 
         LocalDate month = LocalDate.now().minusDays(LocalDate.now().getDayOfMonth() - 1);
