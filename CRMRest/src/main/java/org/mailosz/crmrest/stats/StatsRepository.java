@@ -20,9 +20,7 @@ public interface StatsRepository extends JpaRepository<SaleEntity, UUID> {
                     "FROM sales s " +
                     "JOIN crm_sale_stages stages ON s.stage_id = stages.id " +
                     "WHERE stages.stage = 'ZAKONCZONA' " +
-                    // Dolna granica: początek miesiąca X kroków wstecz
                     "AND s.sale_date >= date_trunc('month', CURRENT_DATE - INTERVAL '2 month') " +
-                    // Górna granica: do końca obecnego momentu (lub końca obecnego miesiąca)
                     "AND s.sale_date < date_trunc('month', CURRENT_DATE + INTERVAL '1 month') " +
                     "GROUP BY to_char(s.sale_date, 'YYYY-MM') " +
                     "ORDER BY monthName DESC")
@@ -47,12 +45,37 @@ public interface StatsRepository extends JpaRepository<SaleEntity, UUID> {
                     "FROM sales s " +
                     "JOIN crm_sale_stages stages ON s.stage_id = stages.id " +
                     "WHERE stages.stage = 'ZAKONCZONA' " +
-                    // Dół widełek: początek badanego miesiąca
                     "AND s.sale_date >= date_trunc('month', CURRENT_DATE - (:monthsBack || ' month')::INTERVAL) " +
-                    // Góra widełek: początek NASTĘPNEGO miesiąca po badanym (czyli koniec badanego)
                     "AND s.sale_date < date_trunc('month', CURRENT_DATE - ((:monthsBack - 1) || ' month')::INTERVAL)"
     )
     StatsHeaderValueProjection findHeaderValues(@Param("monthsBack") int monthBack);
+
+
+    @Query(nativeQuery = true,
+            value = "SELECT " +
+                    "CAST(COALESCE(SUM(s.sum_price), 0) AS TEXT) AS incomeSum, " +
+                    "CAST(COALESCE(AVG(s.sum_price), 0) AS TEXT) AS avgOrderValue " +
+                    "FROM sales s " +
+                    "JOIN crm_sale_stages stages ON s.stage_id = stages.id " +
+                    "JOIN crm_users users ON users.id = s.user_id " +
+                    "WHERE stages.stage = 'ZAKONCZONA' AND users.id = :userId " +
+                    "AND s.sale_date >= date_trunc('month', CURRENT_DATE - (:monthsBack || ' month')::INTERVAL) " +
+                    "AND s.sale_date < date_trunc('month', CURRENT_DATE - ((:monthsBack - 1) || ' month')::INTERVAL)"
+    )
+    StatsHeaderValueProjection findHeaderValues(@Param("monthsBack") int monthBack,@Param("userId") UUID userId);
+
+    @Query(nativeQuery = true,
+            value = "SELECT " +
+                    "CAST(COUNT(s.id) FILTER (WHERE stages.stage = 'ZAKONCZONA') AS TEXT) AS wonOffers, " +
+                    "CAST(COUNT(s.id) FILTER (WHERE stages.stage = 'ODRZUCONA' OR stages.stage = 'ZWROCONA') AS TEXT) AS lostOffers " +
+                    "FROM sales s " +
+                    "JOIN crm_sale_stages stages ON s.stage_id = stages.id " +
+                    "JOIN crm_users users ON s.user_id = users.id " +
+                    "WHERE s.sale_date >= date_trunc('month', CURRENT_DATE) " +
+                    "AND users.id = :userId "
+    )
+    OffersWinRateProjection findSalesWinRate(@Param("userId") UUID userId);
+
 
 
 

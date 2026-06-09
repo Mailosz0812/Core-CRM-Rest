@@ -1,21 +1,35 @@
 package org.mailosz.crmrest.stats;
 
+import org.mailosz.crmrest.crmuser.CrmUserEntity;
+import org.mailosz.crmrest.crmuser.UserRepository;
+import org.mailosz.crmrest.crmuser.roles.Role;
+import org.mailosz.crmrest.exception.types.CrmUserNotFoundException;
+import org.mailosz.crmrest.exception.types.InsufficientPrivilegesException;
+import org.mailosz.crmrest.stats.response.SalesmanStats;
 import org.mailosz.crmrest.stats.response.StatsResponse;
 import org.mailosz.crmrest.stats.response.StatsTemplate;
+import org.mailosz.crmrest.stats.target.TargetEntity;
+import org.mailosz.crmrest.stats.target.TargetRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class StatsService {
     private final StatsRepository statsRepo;
+    private final UserRepository userRepository;
+    private final TargetRepository targetRepository;
 
-    public StatsService(StatsRepository statsRepo) {
+    public StatsService(StatsRepository statsRepo, UserRepository userRepository, TargetRepository targetRepository) {
         this.statsRepo = statsRepo;
+        this.userRepository = userRepository;
+        this.targetRepository = targetRepository;
     }
 
     public StatsResponse findMonthlyStats(){
@@ -51,6 +65,27 @@ public class StatsService {
         );
 
         return new StatsResponse(incomeTemplate,orderVolume);
+    }
+
+    public SalesmanStats findSalesmanStats(String username){
+        CrmUserEntity user = this.userRepository.findCrmUserEntityByMail(username).orElseThrow(() -> new CrmUserNotFoundException(username));
+        if(!Role.SALESMAN.toString().equals(user.getRole())){
+            throw new InsufficientPrivilegesException("Invalid privileges");
+        }
+        StatsHeaderValueProjection headerValues = this.statsRepo.findHeaderValues(0,user.getId());
+
+        LocalDate month = LocalDate.now().minusDays(LocalDate.now().getDayOfMonth() - 1);
+        TargetEntity target = this.targetRepository.findTargetEntityByUserAndTargetMonth(user,month)
+                .orElseGet(() -> new TargetEntity(UUID.randomUUID(),user,BigDecimal.ZERO,month));
+
+        OffersWinRateProjection winRate = this.statsRepo.findSalesWinRate(user.getId());
+
+        return new SalesmanStats(
+                headerValues.getIncomeSum().toString(),
+                target.getTarget().toString(),
+                winRate.getWonOffers(),
+                winRate.getLostOffers(),
+                headerValues.getAvgOrderValue().setScale(4,RoundingMode.HALF_UP).toString());
     }
 
     private BigDecimal calculateDifference(BigDecimal prev, BigDecimal actual){
