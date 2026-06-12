@@ -11,7 +11,7 @@ public class TargetRequest {
     @NotNull
     private UUID userId;
 
-    @DecimalMin(value = "0.00",message = "Target should be greater than zero")
+    @DecimalMin(value = "0.00",message = "Target should be greater than zero", inclusive = false)
     private BigDecimal target;
 
     public TargetRequest(UUID userId, BigDecimal target) {

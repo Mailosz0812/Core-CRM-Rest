@@ -5,8 +5,11 @@ import org.mailosz.crmrest.crmuser.UserRepository;
 import org.mailosz.crmrest.crmuser.roles.Role;
 import org.mailosz.crmrest.exception.types.CrmUserNotFoundException;
 import org.mailosz.crmrest.exception.types.IllegalUserOperation;
+import org.mailosz.crmrest.exception.types.TargetNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -25,12 +28,11 @@ public class TargetService {
         CrmUserEntity user = this.userRepo.findCrmUserEntityById(req.getUserId())
                 .orElseThrow(() -> new CrmUserNotFoundException(req.getUserId().toString()));
 
+
         if(user.getRole() != null && !user.getRole().equals(Role.SALESMAN.toString())){
             throw new IllegalUserOperation("Cannot add target to non salesman user");
         }
-
-        LocalDate month = LocalDate.now().minusDays(LocalDate.now().getDayOfMonth() - 1);
-
+        LocalDate month = this.getMonth();
         if(this.targetRepo.findTargetEntityByUserAndTargetMonth(user,month).isPresent()){
             throw new IllegalUserOperation("Target for this user already exists");
         }
@@ -47,5 +49,31 @@ public class TargetService {
                 targetResp.getTargetMonth(),
                 targetResp.getTarget()
         );
+    }
+
+    @Transactional
+    public TargetResponse modifyTarget(TargetRequest req){
+        CrmUserEntity user = this.userRepo.findCrmUserEntityById(req.getUserId())
+                .orElseThrow(() -> new CrmUserNotFoundException(req.getUserId().toString()));
+
+        if(user.getRole() != null && !user.getRole().equals(Role.SALESMAN.toString())){
+            throw new IllegalUserOperation("Cannot add target to non salesman user");
+        }
+        LocalDate month = this.getMonth();
+        TargetEntity target = this.targetRepo.findTargetEntityByUserAndTargetMonth(user,month)
+                .orElseThrow(() -> new TargetNotFoundException(user.getId().toString()));
+
+        target.setTarget(req.getTarget());
+        TargetEntity resp = this.targetRepo.save(target);
+
+        return new TargetResponse(
+                resp.getId().toString(),
+                resp.getUser().getId().toString(),
+                resp.getTargetMonth(),
+                resp.getTarget()
+        );
+    }
+    private LocalDate getMonth(){
+        return LocalDate.now().minusDays(LocalDate.now().getDayOfMonth() - 1);
     }
 }
