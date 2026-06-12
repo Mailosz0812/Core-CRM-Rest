@@ -12,9 +12,11 @@ public class ProductUpdateReq {
     private UUID id;
 
     @NotBlank
+    @Size(max=50)
     private String name;
 
     @NotBlank
+    @Size(max=50)
     private String internal;
 
     @NotNull
@@ -29,8 +31,10 @@ public class ProductUpdateReq {
     private OffsetDateTime tps;
 
     @NotBlank
+    @Size(max=50)
     private String producer;
 
+    @Size(max=30)
     private String pack;
 
     @NotNull
