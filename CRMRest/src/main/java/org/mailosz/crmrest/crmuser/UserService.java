@@ -11,7 +11,9 @@ import org.mailosz.crmrest.exception.types.RoleNotFoundException;
 import org.mailosz.crmrest.helpers.Mapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,7 +22,6 @@ public class UserService {
     private final RoleRepository roleRepo;
     private final PasswordEncoder encoder;
     private final Mapper<CrmUserEntity,UserCreateResp> createMapper;
-    private final Mapper<CrmUserEntity,UserResponse> respMapper;
 
 
     public UserService(UserRepository userRepo, RoleRepository roleRepo, PasswordEncoder encoder, Mapper<CrmUserEntity,
@@ -29,16 +30,16 @@ public class UserService {
         this.roleRepo = roleRepo;
         this.encoder = encoder;
         this.createMapper = createMapper;
-        this.respMapper = respMapper;
     }
 
-    public UserCreateResp createUser(UserCreateReq createReq, String role){
+    @Transactional
+    public UserCreateResp createUser(UserCreateReq createReq){
         String mail = createReq.getMail();
         this.userRepo.findCrmUserEntityByMail(mail)
                 .ifPresent(crmUserEntity -> { throw new CrmUserAlreadyExistsException(mail);
         });
-        RoleEntity roleEntity = this.roleRepo.findRoleEntityByName(role)
-                .orElseThrow(() -> new RoleNotFoundException(role));
+        RoleEntity roleEntity = this.roleRepo.findRoleEntityByName(createReq.getRole().toString())
+                .orElseThrow(() -> new RoleNotFoundException(createReq.getRole().toString()));
 
         CrmUserEntity userEntity = new CrmUserEntity();
         userEntity.setMail(mail);
@@ -50,8 +51,18 @@ public class UserService {
         CrmUserEntity saved = userRepo.save(userEntity);
         return this.createMapper.mapFrom(saved);
     }
-    public UserResponse getUserById(UUID userId){
+    public UserCreateResp getUserById(UUID userId){
         CrmUserEntity userEntity = this.userRepo.findCrmUserEntityById(userId).orElseThrow(() -> new CrmUserNotFoundException(userId.toString()));
-        return this.respMapper.mapFrom(userEntity);
+        return this.createMapper.mapFrom(userEntity);
+    }
+
+    @Transactional
+    public UUID deleteUser(UUID userId){
+        CrmUserEntity userEntity = this.userRepo.findCrmUserEntityById(userId).orElseThrow(() -> new CrmUserNotFoundException(userId.toString()));
+        this.userRepo.delete(userEntity);
+        return userId;
+    }
+    public List<UserCreateResp> getAllUsers(){
+        return this.userRepo.findAllNonAdminUsers().stream().map(this.createMapper::mapFrom).toList();
     }
 }

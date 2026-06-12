@@ -18,23 +18,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/users/magazine")
 public class MagazineController {
-    private final UserService userService;
     private final SaleService saleService;
 
-    public MagazineController(UserService userService, SaleService saleService) {
-        this.userService = userService;
+    public MagazineController(SaleService saleService) {
         this.saleService = saleService;
-    }
-
-    @PostMapping
-    public ResponseEntity<UserCreateResp> createWarehouseman(@RequestBody @Valid UserCreateReq req){
-        UserCreateResp resp = this.userService.createUser(req,Role.MAGAZINE.name());
-        URI location = ServletUriComponentsBuilder
-                .fromPath("/users/admin")
-                .path("/{id}")
-                .buildAndExpand(resp.getUserId())
-                .toUri();
-        return ResponseEntity.created(location).body(resp);
     }
 
     @GetMapping("/daily")
