@@ -1,8 +1,6 @@
 package org.mailosz.crmrest.sales.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import org.mailosz.crmrest.helpers.validator.TpsDate;
 import org.mailosz.crmrest.prices.SellingUnit;
 
@@ -12,13 +10,15 @@ import java.time.OffsetDateTime;
 public class CustomSaleItem {
 
     @NotBlank
+    @Size(max=50)
     private String name;
 
     @NotBlank
+    @Size(max=50)
     private String internal;
 
     @NotNull
-    @Positive
+    @DecimalMin(value = "0.00",message = "Price should be greater than or equal zero")
     private BigDecimal unitPrice;
 
     @NotNull

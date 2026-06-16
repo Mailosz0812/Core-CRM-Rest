@@ -3,6 +3,7 @@ package org.mailosz.crmrest.sales.request;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,11 +20,14 @@ public class SaleCreateReq {
     @Valid
     private List<CustomSaleItem> customItems;
 
+    @Size(max=100)
     private String saleData;
 
+    @Size(max=100)
     private String warehouseNote;
 
     @NotBlank
+    @Size(max=40)
     private String saleName;
 
 

@@ -8,14 +8,16 @@ import org.hibernate.validator.constraints.UUID;
 
 public class ClientUpdateReq {
 
-    @UUID
     @NotBlank
+    @UUID
     private String clientId;
 
     @NotBlank
+    @Size(max = 50)
     private String name;
 
     @NotBlank
+    @Size(max = 100)
     private String address;
 
     @NotBlank
@@ -23,9 +25,12 @@ public class ClientUpdateReq {
     @Size(min = 9, max = 9)
     private String phone;
 
-    @Email
     @NotBlank
+    @Size(max = 50)
+    @Email
     private String mail;
+
+    @Size(max = 120)
     private String decisionPerson;
 
     public ClientUpdateReq(String clientId, String name, String address,
