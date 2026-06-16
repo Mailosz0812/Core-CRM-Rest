@@ -92,8 +92,8 @@ public class PriceListService {
 
         Map<Boolean, List<ProductOperation>> operations = this.divideOperations(req.getProductList());
 
-        List<ProductUpdateReq> updateReqs = this.getReqs(false,operations);
-        List<ProductUpdateReq> deleteReqs = this.getReqs(true,operations);
+        List<ProductUpdateOperation> updateReqs = this.getReqs(false,operations, ProductUpdateOperation.class);
+        List<ProductDeleteOperation> deleteReqs = this.getReqs(true,operations,ProductDeleteOperation.class);
 
         Map<UUID,ProductEntity> existingEntities = priceList.getProducts().stream()
                 .collect(Collectors.toMap(ProductEntity::getId,p -> p));
@@ -183,8 +183,8 @@ public class PriceListService {
         );
     }
 
-    private void processUpdates(List<ProductUpdateReq> updateReqs,Map<UUID,ProductEntity> existingEntities, PriceListEntity priceList,Map<UUID,CategoryEntity> categoriesMap){
-        for (ProductUpdateReq prodReq : updateReqs) {
+    private void processUpdates(List<ProductUpdateOperation> updateReqs,Map<UUID,ProductEntity> existingEntities, PriceListEntity priceList,Map<UUID,CategoryEntity> categoriesMap){
+        for (ProductUpdateOperation prodReq : updateReqs) {
             UUID currId = prodReq.getId();
             ProductEntity prod = new ProductEntity();
             if(currId != null){
@@ -212,12 +212,9 @@ public class PriceListService {
             prod.setCategory(category);
         }
     }
-    private void processDeletions(List<ProductUpdateReq> deletionReqs,Map<UUID,ProductEntity> existingEntities, PriceListEntity priceList){
-        for (ProductUpdateReq deletionReq : deletionReqs) {
+    private void processDeletions(List<ProductDeleteOperation> deletionReqs,Map<UUID,ProductEntity> existingEntities, PriceListEntity priceList){
+        for (ProductDeleteOperation deletionReq : deletionReqs) {
             UUID id = deletionReq.getId();
-            if(id == null){
-                throw new UnprocessableContent("Product id is null","PROD_ID_NULL");
-            }
             ProductEntity prod = existingEntities.get(id);
             if(prod == null){
                 throw new ProductNotFoundException(id.toString(),"PROD_NOT_FOUND");
@@ -227,12 +224,12 @@ public class PriceListService {
     }
     private Map<Boolean,List<ProductOperation>> divideOperations(List<ProductOperation> operations){
         return operations.stream()
-                .collect(Collectors.partitioningBy(ProductOperation::getDelete));
+                .collect(Collectors.partitioningBy(op -> op.getOperationType() == OperationType.DELETE));
     }
 
-    private List<ProductUpdateReq> getReqs(Boolean isDelete, Map<Boolean,List<ProductOperation>> operations){
-        return operations.get(isDelete).stream()
-                .map(ProductOperation::getProdReq)
+    private <T extends ProductOperation> List<T> getReqs(Boolean isDelete, Map<Boolean,List<ProductOperation>> operations, Class<T> type){
+        return operations.getOrDefault(isDelete, List.of()).stream()
+                .map(type::cast)
                 .toList();
     }
     private List<ProductUpdateReq> filterNullableProducts(List<ProductUpdateReq> products){
