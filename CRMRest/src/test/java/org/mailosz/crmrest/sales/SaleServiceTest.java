@@ -229,7 +229,8 @@ class SaleServiceTest {
                             productEntity.getInternalName(),
                             tps,
                             productEntity.getPack(),
-                            productEntity.getCategory().getName()
+                            productEntity.getCategory().getName(),
+                            productEntity.getProducer()
                     ),
                     new SaleItemResponse(
                             itemId.toString(),
@@ -242,7 +243,8 @@ class SaleServiceTest {
                             productEntity2.getInternalName(),
                             tps,
                             productEntity.getPack(),
-                            productEntity.getCategory().getName()
+                            productEntity.getCategory().getName(),
+                            productEntity.getProducer()
                     )
             );
 

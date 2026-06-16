@@ -17,11 +17,12 @@ public class SaleItemResponse {
     private OffsetDateTime tps;
     private String pack;
     private String category;
+    private String producer;
 
-    public SaleItemResponse(String saleItemId, String prodId, String name,
-                            BigDecimal unitPrice, SellingUnit unit, BigDecimal amount,
-                            BigDecimal sumPrice, String internal, OffsetDateTime tps,
-                            String pack, String category) {
+    public SaleItemResponse(String saleItemId, String prodId,
+                            String name, BigDecimal unitPrice, SellingUnit unit,
+                            BigDecimal amount, BigDecimal sumPrice, String internal,
+                            OffsetDateTime tps, String pack, String category, String producer) {
         this.saleItemId = saleItemId;
         this.prodId = prodId;
         this.name = name;
@@ -33,6 +34,7 @@ public class SaleItemResponse {
         this.tps = tps;
         this.pack = pack;
         this.category = category;
+        this.producer = producer;
     }
 
     public SaleItemResponse(){}
@@ -123,5 +125,13 @@ public class SaleItemResponse {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getProducer() {
+        return producer;
+    }
+
+    public void setProducer(String producer) {
+        this.producer = producer;
     }
 }

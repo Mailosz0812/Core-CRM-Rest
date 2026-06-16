@@ -224,7 +224,8 @@ public class SaleService {
                         item.getUnit(),
                         item.getAmount(),
                         item.getInternalName(),
-                        item.getProduct().getCategory().getName()
+                        item.getProduct() != null ? item.getProduct().getCategory().getName() : "-",
+                        item.getProduct() != null ? item.getProduct().getProducer() : "-"
                 )).toList();
     }
 
@@ -282,8 +283,9 @@ public class SaleService {
                         item.getInternalName(),
                         item.getTps(),
                         item.getPack(),
-                        item.getProduct() != null ? item.getProduct().getCategory().getName(): "Custom"))
-                .toList();
+                        item.getProduct() != null ? item.getProduct().getCategory().getName(): "Custom",
+                        item.getProduct() != null ? item.getProduct().getProducer() : "-"
+                )).toList();
         return new SaleCreationResp(
                 saleEntity.getId().toString(),
                 saleEntity.getSaleData(),
