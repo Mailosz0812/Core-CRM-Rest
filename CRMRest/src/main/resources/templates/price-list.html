@@ -11,10 +11,10 @@
         }
 
         body {
-            font-family: "DejaVu Sans", sans-serif;
+            font-family: "Roboto", sans-serif;
             color: #000;
-            line-height: 1.1;
-            font-size: 8.5pt; /* Rozmiar dopasowany do dużej ilości danych */
+            line-height: 1.2; /* Lekko zwiększona interlinia dla lepszej czytelności */
+            font-size: 9.5pt; /* Zwiększono z 8.5pt */
         }
 
         .header-top {
@@ -27,7 +27,7 @@
         .date-box {
             float: right;
             font-weight: bold;
-            font-size: 10pt;
+            font-size: 11pt; /* Zwiększono z 10pt */
         }
 
         table {
@@ -38,7 +38,7 @@
 
         th, td {
             border: 1px solid #000;
-            padding: 2px 5px;
+            padding: 3px 5px; /* Minimalnie zwiększony górny i dolny margines wewnętrzny */
             overflow: hidden;
         }
 
@@ -46,28 +46,35 @@
         th {
             background-color: #f3f4f6;
             text-transform: uppercase;
-            font-size: 7.5pt;
+            font-size: 8.5pt; /* Zwiększono z 7.5pt */
             font-weight: bold;
         }
 
         /* Wiersz kategorii - ciemniejszy szary pasek */
         .category-row {
-            background-color: #d1d5db; /* Szary jak na wzorze */
+            background-color: #d1d5db;
             font-weight: bold;
             text-transform: uppercase;
-            font-size: 9pt;
+            font-size: 10.5pt; /* Zwiększono z 9pt */
         }
 
-        /* Szerokości kolumn zgodne z proporcjami na zdjęciu */
+        /* Szerokości kolumn */
         .col-lp { width: 25px; text-align: center; }
-        .col-name { width: auto; }
+        .col-name { width: auto; text-align: left; }
         .col-unit { width: 30px; text-align: center; }
         .col-pack { width: 55px; text-align: center; }
         .col-price { width: 60px; text-align: right; font-weight: bold; }
-        .col-tps { width: 70px; text-align: center; }
+        .col-tps { width: 75px; text-align: center; } /* Lekko poszerzona, żeby zmieścić większą datę */
 
+        /* Styl dla nazwy produktu */
+        .product-name {
+            font-weight: bold;
+            font-size: 9.5pt; /* Zwiększono z 8.5pt */
+        }
+
+        /* Styl dla nazwy producenta w nawiasie */
         .producer-tag {
-            font-size: 7pt;
+            font-size: 8pt; /* Zwiększono z 7pt */
             color: #4b5563;
             font-weight: normal;
             margin-left: 4px;
@@ -79,7 +86,7 @@
 <body>
 
 <div class="header-top">
-    <div class="date-box" th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy')}">08.04.2026</div>
+    <div class="date-box" th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy')}"></div>
     <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase;">NAZWA</div>
     <div class="clear"></div>
 </div>
@@ -88,7 +95,7 @@
     <thead>
     <tr>
         <th class="col-lp"></th>
-        <th style="text-align: left;">NAZWA</th>
+        <th class="col-name">NAZWA</th>
         <th class="col-unit">jm.</th>
         <th class="col-pack">OPAK.</th>
         <th class="col-price">CENA</th>
@@ -103,15 +110,15 @@
         </tr>
 
         <tr>
-            <td class="col-lp" th:text="${iterStat.count}">1</td>
+            <td class="col-lp" th:text="${iterStat.count}"></td>
             <td>
-                <span style="font-weight: 500;" th:text="${prod.name}">NAZWA PRODUKTU</span>
+                <span class="product-name" th:text="${prod.name}">NAZWA PRODUKTU</span>
                 <span class="producer-tag" th:if="${prod.producer != null}" th:text="'(' + ${prod.producer} + ')'"></span>
             </td>
-            <td class="col-unit" th:text="${prod.unit != null ? prod.unit.toString().toLowerCase() : ''}">szt</td>
-            <td class="col-pack" th:text="${prod.pack}">150g</td>
-            <td class="col-price" th:text="${#numbers.formatDecimal(prod.unitPrice, 1, 2, 'COMMA')} + ' zl'">4,29 zł</td>
-            <td class="col-tps" th:text="${prod.tps != null ? #temporals.format(prod.tps, 'd.MM.yy') : 'X'}">9.04.26</td>
+            <td class="col-unit" th:text="${prod.unit != null ? prod.unit.toString().toLowerCase() : ''}"></td>
+            <td class="col-pack" th:text="${prod.pack}"></td>
+            <td class="col-price" th:text="${#numbers.formatDecimal(prod.unitPrice, 1, 2, 'COMMA')} + ' zł'"></td>
+            <td class="col-tps" th:text="${prod.tps != null ? #temporals.format(prod.tps.atZoneSameInstant(T(java.time.ZoneId).of('Europe/Warsaw')), 'dd.MM.yyyy') : 'X'}"></td>
         </tr>
     </th:block>
     </tbody>

@@ -14,8 +14,8 @@
         body {
             font-family: "Roboto", sans-serif;
             color: #333333;
-            line-height: 1.5;
-            font-size: 12pt;
+            line-height: 1.4;
+            font-size: 11pt;
         }
 
         /* 1. NAZWA (Tytuł) */
@@ -31,6 +31,7 @@
             color: #4b5563;
             margin-bottom: 25px;
         }
+
         .note-box {
             border: 2px solid #e5e7eb;
             background-color: #f9fafb;
@@ -52,12 +53,14 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            table-layout: fixed; /* Gwarantuje respektowanie szerokości podanych w % */
         }
 
         th, td {
             border: 1px solid #d1d5db;
-            padding: 10px 12px;
+            padding: 8px 10px;
             text-align: left;
+            vertical-align: middle;
         }
 
         th {
@@ -67,19 +70,33 @@
             color: #374151;
         }
 
-        td {
-            font-size: 11pt;
+        /* Klasa wymuszająca bezpieczne zawijanie tekstu */
+        .wrap-content {
+            white-space: normal !important;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
+        /* Klasa blokująca zawijanie (np. dla dat i liczb) */
+        .no-wrap {
+            white-space: nowrap !important;
+        }
 
         .product-internal {
             font-weight: bold;
             color: #111827;
+            font-size: 11pt;
+            margin-bottom: 2px;
         }
 
         .product-name {
             font-size: 10pt;
             color: #6b7280;
+        }
+
+        .cell-center {
+            text-align: center;
         }
     </style>
 </head>
@@ -96,36 +113,39 @@
 
 <div class="note-box" th:if="${warehouseNote != null and !warehouseNote.isEmpty()}">
     <div class="note-title">Notatka do zamówienia:</div>
-    <div th:text="${warehouseNote}">
-    </div>
+    <div th:text="${warehouseNote}"></div>
 </div>
 
 <table>
     <thead>
     <tr>
-        <th style="width: 5%;">Lp.</th>
-        <th style="width: 35%;">Produkt</th>
-        <th style="width: 20%; text-align: center;">TPS</th>
-        <th style="width: 20%; text-align: center;">Kategoria</th>
-        <th style="width: 20%; text-align: center;">Ilość</th>
+        <th style="width: 6%; text-align: center;">Lp.</th>
+        <th style="width: 36%;">Produkt</th>
+        <th style="width: 15%; text-align: center;">TPS</th>
+        <th style="width: 16%; text-align: center;">Kategoria</th>
+        <th style="width: 15%; text-align: center;">Producent</th>
+        <th style="width: 12%; text-align: center;">Ilość</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="item, iterStat : ${saleItems}">
-        <td th:text="${iterStat.count}">1</td>
-        <td>
+        <td class="no-wrap cell-center" th:text="${iterStat.count}"></td>
+        <td class="wrap-content">
             <div class="product-internal" th:text="${item.internal}"></div>
             <div class="product-name" th:text="${item.name}"></div>
         </td>
-        <td style="text-align: center; font-weight: bold; font-size: 12pt;">
-            <div  th:text="${#temporals.format(item.tps, 'dd.MM.yyyy')}"></div>
+        <td class="no-wrap cell-center" style="font-weight: bold; font-size: 11pt;">
+            <div th:text="${#temporals.format(item.tps.atZoneSameInstant(T(java.time.ZoneId).of('Europe/Warsaw')), 'dd.MM.yyyy')}"></div>
         </td>
-        <td style="text-align: center; font-weight: bold; font-size: 12pt;">
-            <div  th:text="${item.category}"></div>
+        <td class="wrap-content cell-center" style="font-weight: bold; font-size: 11pt;">
+            <div th:text="${item.category}"></div>
         </td>
-        <td style="text-align: center; font-weight: bold; font-size: 12pt;">
-            <span th:text="${item.amount}"></span>
-            <span style="font-size: 10pt; font-weight: normal;" th:text="${item.unit}"></span>
+        <td class="wrap-content cell-center" style="font-weight: bold; font-size: 11pt;">
+            <div th:text="${item.producer}"></div>
+        </td>
+        <td class="no-wrap cell-center" style="font-weight: bold; font-size: 11pt;">
+            <div th:text="${item.amount}"></div>
+            <div style="font-size: 9pt; font-weight: normal; color: #4b5563;" th:text="${item.unit}"></div>
         </td>
     </tr>
     </tbody>
