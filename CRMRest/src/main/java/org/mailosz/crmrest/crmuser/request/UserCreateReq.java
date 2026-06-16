@@ -4,12 +4,15 @@ package org.mailosz.crmrest.crmuser.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.mailosz.crmrest.crmuser.roles.Role;
 import org.mailosz.crmrest.helpers.validator.ValidPassword;
 
 @ValidPassword
 public class UserCreateReq {
 
+    @NotBlank
+    @Size(max=50)
     @Email
     private String mail;
 
@@ -17,8 +20,11 @@ public class UserCreateReq {
     private String confirmPassword;
 
     @NotBlank
+    @Size(max=40)
     private String name;
+
     @NotNull
+    @Size(max=60)
     private String surname;
 
     @NotNull

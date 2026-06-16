@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.pl.NIP;
 public class ClientRequest {
 
     @NotBlank
+    @Size(max = 50)
     private String name;
 
     @NotBlank
@@ -13,6 +14,7 @@ public class ClientRequest {
     private String nipNumber;
 
     @NotBlank
+    @Size(max = 100)
     private String address;
 
     @NotBlank
@@ -23,7 +25,10 @@ public class ClientRequest {
 
     @Email
     @NotBlank
+    @Size(max = 50)
     private String mail;
+
+    @Size(max=120)
     private String decisionPerson;
 
     public ClientRequest(String name, String nipNumber, String address,
