@@ -32,6 +32,7 @@ public class CustomSaleItem {
     @TpsDate
     private OffsetDateTime tps;
 
+    @Size(max=30)
     private String pack;
 
     public CustomSaleItem(String name, String internal, BigDecimal unitPrice, SellingUnit unit, BigDecimal amount, OffsetDateTime tps, String pack) {
